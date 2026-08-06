@@ -103,7 +103,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 99">v99</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 101">v101</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -344,12 +344,15 @@
     <section class="panel">
       <div class="panel-head"><div><h2>Lecture des niveaux Fibonacci</h2><div class="sub">Cadre de lecture pour comparer les niveaux visibles dans les trois graphiques.</div></div><span class="status-pill">Liens externes</span></div>
       <div class="grid2">
+        <article class="mini"><b>Shallow Fib</b><span class="sub">Chez FiboSwanny, le Shallow Fib correspond au niveau précédent des 38,2 % de Fibonacci. Il sert de seuil de bascule entre les zones Bull et Bear.</span></article>
+        <article class="mini"><b>Bull zone</b><span class="sub">Le passage en Bull zone est validé après 3 settles consécutifs au-dessus du Shallow Fib actif.</span></article>
+        <article class="mini"><b>Bear zone</b><span class="sub">Le passage en Bear zone est validé après 3 settles consécutifs en dessous du Shallow Fib précédent.</span></article>
         <article class="mini"><b>Retracements</b><span class="sub">Surveiller notamment les zones 0,382 · 0,50 · 0,618 · 0,786 entre le creux et le sommet sélectionnés.</span></article>
         <article class="mini"><b>Extensions</b><span class="sub">Les niveaux 1,272 · 1,618 · 2,618 servent de repères de poursuite lorsque le précédent sommet est dépassé.</span></article>
         <article class="mini"><b>Ancrages</b><span class="sub">Le résultat dépend entièrement des deux points choisis. Vérifier que les trois graphiques utilisent le même cycle et la même unité de temps.</span></article>
         <article class="mini"><b>Usage DCA</b><span class="sub">Utiliser ces niveaux comme zones de confluence avec le Bitcoin Risk, les moyennes mobiles et le contexte de cycle, pas comme objectifs certains.</span></article>
       </div>
-      <p class="note">TradingView peut demander une connexion pour afficher la disposition complète ou les indicateurs privés. Les liens ouvrent les graphiques originaux dans un nouvel onglet.</p>
+      <p class="note">Règle FiboSwanny intégrée : 3 settles au-dessus du Shallow Fib pour confirmer la Bull zone ; 3 settles sous le Shallow Fib précédent pour confirmer la Bear zone. TradingView peut demander une connexion pour afficher la disposition complète ou les indicateurs privés.</p>
     </section>
   </div>
 
