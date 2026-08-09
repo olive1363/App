@@ -76,7 +76,7 @@
 
   
 @media (max-width: 760px){
-  /* v129 - optimisation mobile Bitcoin Risk & DCA */
+  /* v130 - optimisation mobile Bitcoin Risk & DCA */
   #page-bitcoin-risk-dca .section,
   #page-bitcoin-risk-dca .card,
   #page-bitcoin-risk-dca .panel{
@@ -134,6 +134,14 @@
   }
 }
 
+
+/* v130 ETF dashboard */
+#etfFlowsPage .etf-kpis{grid-template-columns:repeat(5,minmax(0,1fr));}
+#etfFlowsPage .value.positive,#etfFlowsPage b.positive{color:#39d98a!important}
+#etfFlowsPage .value.negative,#etfFlowsPage b.negative{color:#ff647c!important}
+#etfFlowsPage .value.neutral,#etfFlowsPage b.neutral{color:#f6c85f!important}
+@media(max-width:900px){#etfFlowsPage .etf-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}#etfFlowsPage .etf-kpis .card:last-child{grid-column:1/-1}#etfFlowsPage .risk-backtest-chart{min-height:330px}}
+
 </style>
   <style>
     .fg-layout{display:grid;grid-template-columns:minmax(330px,.72fr) minmax(560px,1.28fr);gap:12px}.fg-hero{text-align:center}.fg-score{font-size:74px;font-weight:900;line-height:1;margin:22px 0 5px}.fg-track{display:grid;grid-template-columns:25fr 20fr 10fr 20fr 25fr;height:34px;border-radius:10px;overflow:hidden;border:1px solid #31465d;margin:22px 0 7px;position:relative}.fg-track span:nth-child(1){background:#9d2737}.fg-track span:nth-child(2){background:#c86b2c}.fg-track span:nth-child(3){background:#b5a737}.fg-track span:nth-child(4){background:#6da443}.fg-track span:nth-child(5){background:#278b57}.fg-marker{position:absolute;top:-5px;bottom:-5px;width:4px;background:#fff;box-shadow:0 0 10px #fff;transform:translateX(-50%)}.fg-chart{width:100%;height:auto;min-height:350px;background:#020407;border:1px solid #1a2a3c;border-radius:14px;margin-top:12px}.fg-zone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.fg-zone-grid div{padding:9px 5px;border-radius:8px;background:#081523;border:1px solid #263b52;text-align:center;font-size:10px}.fg-zone-grid b{display:block;font-size:12px}.fg-chart-line{fill:none;stroke:#f7b34d;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}.fg-chart-area{fill:#f7b34d;opacity:.12}.fg-grid{stroke:#203247;stroke-width:1}.fg-axis-label{fill:#8fa3bb;font-size:11px}@media(max-width:900px){.fg-layout{display:block}.fg-zone-grid{grid-template-columns:1fr 1fr}.fg-chart{min-height:290px}}
@@ -160,7 +168,7 @@
     @media(max-width:760px){.view-mode-tools{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.actions{flex-wrap:wrap}.v2-component-grid,.page-selection-grid,.page-mode-grid,.v2-dca-grid{grid-template-columns:1fr}.v2-action{font-size:30px}}
   </style>
 
-<style id="v129-mobile-risk-refinements">
+<style id="v130-mobile-risk-refinements">
 @media(max-width:650px){
   /* Bitcoin Risk & DCA : synthèse plus compacte et hiérarchisée */
   #riskPage>.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px;padding:0;overflow:visible}
@@ -201,7 +209,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 129">v129</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 130">v130</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -370,17 +378,57 @@
   </div>
 
   <div class="page" id="etfFlowsPage">
-    <section class="cards">
-      <article class="card"><div class="label">Avoirs ETF au lancement</div><div class="value">≈ 640 K BTC</div><div class="sub">Début 2024 selon le mémo</div></article>
-      <article class="card"><div class="label">Pic fin 2025</div><div class="value">&gt; 1,25 M BTC</div><div class="sub">Sommet des avoirs agrégés</div></article>
-      <article class="card"><div class="label">Tendance juillet 2026</div><div class="value warn">Contraction</div><div class="sub">Retour sous 1,25 M BTC</div></article>
-      <article class="card"><div class="label">Signal demande</div><div class="value warn">Distribution</div><div class="sub">Le bid marginal n’est plus à sens unique</div></article>
+    <section class="cards etf-kpis">
+      <article class="card"><div class="label">Dernier flux net</div><div class="value" id="etfLatestFlow">—</div><div class="sub" id="etfLatestDate">Farside Investors</div></article>
+      <article class="card"><div class="label">Flux nets · 7 jours</div><div class="value" id="etfFlow7">—</div><div class="sub">Somme des séances sur 7 jours calendaires</div></article>
+      <article class="card"><div class="label">Flux nets · 30 jours</div><div class="value" id="etfFlow30">—</div><div class="sub" id="etfFlow30Sub">Demande institutionnelle récente</div></article>
+      <article class="card"><div class="label">Flux nets · 90 jours</div><div class="value" id="etfFlow90">—</div><div class="sub">Tendance structurelle</div></article>
+      <article class="card"><div class="label">Signal ETF</div><div class="value" id="etfSignal">—</div><div class="sub" id="etfSignalSub">Accumulation / neutre / distribution</div></article>
     </section>
-    <section class="panel">
-      <div class="panel-head"><div><h2>Flux et avoirs des ETF Bitcoin</h2><div class="sub">Lecture structurelle de la demande institutionnelle</div></div><span class="status-pill">Référence mémo · données figées</span></div>
-      <div class="reading"><h3>Interprétation</h3><p>Les ETF ont absorbé une part importante de l’offre pendant la hausse 2024–2025. Leur contraction depuis le pic de fin 2025 signifie que ce canal ne constitue plus un acheteur marginal permanent. Le signal doit être confirmé par la variation des avoirs sur 7, 30 et 90 jours lorsque des données actualisées seront disponibles.</p></div>
-      <div class="return-table-wrap" style="margin-top:14px"><table class="return-table"><thead><tr><th>Horizon</th><th>Mesure proposée</th><th>Signal</th></tr></thead><tbody><tr><td>7 jours</td><td>Variation des BTC détenus</td><td>Impulsion courte</td></tr><tr><td>30 jours</td><td>Variation nette et pente</td><td>Accumulation / stabilité / distribution</td></tr><tr><td>90 jours</td><td>Tendance structurelle</td><td>Confirmation de la demande marginale</td></tr></tbody></table></div>
-      <p class="note">La page conserve les niveaux du mémo comme référence. Une future connexion à une source ETF quotidienne pourra remplacer les cartes par des données actualisées sans modifier la logique.</p>
+
+    <section class="panel" style="margin-top:12px">
+      <div class="panel-head"><div><h2>Bitcoin ETF Flows · US Spot ETFs</h2><div class="sub">Flux nets quotidiens en millions de dollars · comparaison avec le prix BTC</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="status-pill" id="etfDataStatus">Chargement…</span><button class="btn primary" id="refreshEtfFlows" type="button">↻ Actualiser</button></div></div>
+      <div class="market-toolbar" id="etfRangeControls">
+        <label class="market-toggle"><input type="radio" name="etfRange" value="90" checked>90 jours</label>
+        <label class="market-toggle"><input type="radio" name="etfRange" value="365">1 an</label>
+        <label class="market-toggle"><input type="radio" name="etfRange" value="all">Depuis 2024</label>
+        <label class="market-toggle"><input type="checkbox" id="etfShowBtc" checked>Prix BTC</label>
+        <label class="market-toggle"><input type="checkbox" id="etfShowMa7" checked>Moyenne 7 séances</label>
+        <label class="market-toggle"><input type="checkbox" id="etfShowMa30">Moyenne 30 séances</label>
+      </div>
+      <svg class="risk-backtest-chart" id="etfFlowChart" viewBox="0 0 1100 500" role="img" aria-label="Flux nets journaliers des ETF Bitcoin spot américains et prix Bitcoin"></svg>
+      <div class="tmc-legend" style="margin-top:8px"><span><i class="dot" style="background:#39d98a"></i>Entrées nettes</span><span><i class="dot" style="background:#ff647c"></i>Sorties nettes</span><span><i class="dot" style="background:#f6c85f"></i>MA 7 séances</span><span><i class="dot" style="background:#a78bfa"></i>MA 30 séances</span><span><i class="dot" style="background:#54a7ff"></i>Prix BTC · axe droit</span></div>
+      <div class="year-tooltip" id="etfFlowTooltip" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" style="margin-top:12px">
+      <div class="panel-head"><div><h2>Flux cumulés par ETF</h2><div class="sub">IBIT · FBTC · GBTC · ensemble des ETF spot US</div></div><span class="status-pill">US$m cumulés</span></div>
+      <div class="market-toolbar">
+        <label class="market-toggle"><input type="checkbox" data-etf-cum="IBIT" checked>IBIT</label>
+        <label class="market-toggle"><input type="checkbox" data-etf-cum="FBTC" checked>FBTC</label>
+        <label class="market-toggle"><input type="checkbox" data-etf-cum="GBTC" checked>GBTC</label>
+        <label class="market-toggle"><input type="checkbox" data-etf-cum="Total" checked>Total</label>
+      </div>
+      <svg class="risk-backtest-chart" id="etfCumulativeChart" viewBox="0 0 1100 430" role="img" aria-label="Flux cumulés des ETF Bitcoin spot américains"></svg>
+      <p class="note">Attention : un flux cumulé en dollars n’est pas un nombre de BTC détenus. Les avoirs ETF peuvent varier avec le prix, les créations/rachats et les actifs apportés lors du lancement.</p>
+    </section>
+
+    <section class="panel" style="margin-top:12px">
+      <div class="panel-head"><div><h2>Lecture Cowen · demande marginale</h2><div class="sub">Le flux ETF est utilisé comme indicateur de participation institutionnelle, pas comme signal d’achat isolé.</div></div><span class="status-pill" id="etfCowenBadge">—</span></div>
+      <div class="year-summary">
+        <div class="year-stat"><span class="label">Moyenne 7 séances</span><b id="etfMa7Value">—</b><span class="sub">Impulsion courte</span></div>
+        <div class="year-stat"><span class="label">Moyenne 30 séances</span><b id="etfMa30Value">—</b><span class="sub">Régime de demande</span></div>
+        <div class="year-stat"><span class="label">IBIT · 30 jours</span><b id="etfIbit30">—</b><span class="sub">BlackRock</span></div>
+        <div class="year-stat"><span class="label">FBTC · 30 jours</span><b id="etfFbtc30">—</b><span class="sub">Fidelity</span></div>
+        <div class="year-stat"><span class="label">GBTC · 30 jours</span><b id="etfGbtc30">—</b><span class="sub">Grayscale</span></div>
+      </div>
+      <div class="reading" style="margin-top:14px"><h3>Interprétation automatique</h3><p id="etfInterpretation">Chargement des flux ETF…</p></div>
+    </section>
+
+    <section class="panel" style="margin-top:12px">
+      <div class="panel-head"><div><h2>Dernières séances</h2><div class="sub">Détail Farside · US$m</div></div><span class="status-pill">IBIT · FBTC · GBTC · Total</span></div>
+      <div class="return-table-wrap"><table class="return-table"><thead><tr><th>Date</th><th>IBIT</th><th>FBTC</th><th>GBTC</th><th>Total</th></tr></thead><tbody id="etfRecentBody"><tr><td colspan="5">Chargement…</td></tr></tbody></table></div>
+      <p class="note">Source principale : Farside Investors. La page tente une mise à jour en ligne à l’ouverture. En cas de blocage réseau/CORS, elle utilise un secours intégré daté du 07/08/2026 et l’indique explicitement.</p>
     </section>
   </div>
 
@@ -3410,7 +3458,7 @@
 
 </script>
 
-<script id="v129-mobile-risk-ui">
+<script id="v130-mobile-risk-ui">
 (()=>{
   const setupMobileRiskSections=()=>{
     const page=document.getElementById('riskPage'); if(!page)return;
@@ -3503,6 +3551,97 @@
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setupMobile);
   else setupMobile();
+})();
+
+</script>
+<script>
+
+(function(){
+  const ETFS=['IBIT','FBTC','BITB','ARKB','BTCO','EZBC','BRRR','HODL','BTCW','MSBT','GBTC','BTC'];
+  const fallback=`11 May 2026| -7.4|-3.6|0|0|7.3|0|0|4.6|0|26.3|0|0|27.2
+12 May 2026|-32.9|-86.1|-17.5|-85.1|0|0|0|0|0|6.0|-17.6|0|-233.2
+13 May 2026|-284.7|-133.2|-35.4|-177.1|0|0|0|0|0|0|0|0|-630.4
+14 May 2026|144.1|3.5|17.7|-9.5|-5.7|-14.1|0|7.5|0|6.8|-31.6|12.6|131.3
+15 May 2026|-136.2|-39.6|-11.6|-52.5|0|-6.9|0|0|0|0|-43.6|0|-290.4
+18 May 2026|-448.4|-63.4|-9.2|-109.6|-3.8|-6.6|0|-7.6|0|0|0|0|-648.6
+19 May 2026|-325.6|-1.7|0|0|0|0|-3.8|0|0|0|0|0|-331.1
+20 May 2026|-61.5|-10.1|0|0|0|0|0|0|0|1.1|0|0|-70.5
+21 May 2026|-103.7|0|0|2.8|0|0|0|0|0|0|0|0|-100.9
+22 May 2026|-68.9|-36.3|0|0|0|0|0|0|0|0|0|0|-105.2
+26 May 2026|-192.4|-57.7|-28.8|0|0|0|0|0|0|0|-41.3|-13.4|-333.6
+27 May 2026|-527.8|-60.3|-17.5|-17.4|0|0|0|0|0|4.3|-104.8|-9.9|-733.4
+28 May 2026|-177.9|-19.2|0|0|0|0|0|0|0|0|-26.2|0|-223.3
+29 May 2026|-68.2|-31.9|0|-7.3|0|0|0|0|0|-5.3|-2.9|-9.7|-125.3
+01 Jun 2026|-440.3|-37.3|0|-12.3|0|0|0|0|0|6.1|0|0|-483.8
+02 Jun 2026|-388.6|-45.1|0|-16.7|0|0|0|0|0|14.8|-83.5|0|-519.1
+03 Jun 2026|-342.3|-54.3|0|0|0|0|0|0|0|0|0|0|-396.6
+04 Jun 2026|47.7|-5.5|-15.6|-20.7|-12.6|0|0|0|0|9.9|0|0|3.2
+05 Jun 2026|-213.7|-59.7|0|0|0|0|0|4.2|0|4.3|-60.8|0|-325.7
+08 Jun 2026|-232.9|59.4|14.1|63.1|0|0|0|0|0|4.9|0|0|-91.4
+09 Jun 2026|-61.6|-20.2|0|0|0|0|0|0|0|0|0|4.4|-77.4
+10 Jun 2026|-148.5|4.0|0|0|0|0|0|0|1.0|0|-87.9|17.5|-213.9
+11 Jun 2026|30.3|-5.5|-13.1|-27.2|0|0|0|-14.8|0|2.2|0|5.6|-22.5
+12 Jun 2026|57.7|18.0|5.2|3.2|0|0|0|1.8|0|0|0|0|85.9
+15 Jun 2026|66.4|-8.7|0|-6.6|0|-5.8|0|-6.1|0|9.4|-124.0|10.6|-64.8
+16 Jun 2026|16.4|4.3|0|0|0|0|0|0|0|1.9|-16.8|4.4|10.2
+17 Jun 2026|-30.8|14.0|0|-43.5|-6.4|0|0|-4.1|0|4.1|-15.5|0|-82.2
+18 Jun 2026|-96.7|0|0|0|0|0|0|-4.4|0|10.4|0|0|-90.7
+22 Jun 2026|-172.0|57.4|0|64.0|0|3.7|0|0|3.4|8.1|-81.0|48.1|-68.3
+23 Jun 2026|-182.0|23.0|0|31.0|0|0|0|5.3|0|8.9|0|0|-113.8
+24 Jun 2026|-239.3|-120.8|-27.5|-50.7|0|0|0|0|0|0|-54.3|23.6|-469.0
+25 Jun 2026|-265.7|-274.5|-7.1|-82.1|-53.0|-6.8|0|-11.7|0|9.2|0|0|-691.7
+26 Jun 2026|-444.5|0|0|0|0|0|0|0|0|0|0|0|-444.5
+29 Jun 2026|-300.4|-3.9|0|50.0|0|0|0|3.8|0|7.3|35.1|-22.9|-231.0
+30 Jun 2026|-212.4|-10.2|0|0|0|0|0|0|0|0|0|0|-222.6
+01 Jul 2026|-219.4|-51.0|0|-39.9|5.4|3.5|0|2.1|0|29.8|-62.8|36.3|-296.0
+02 Jul 2026|-40.4|166.0|0|91.8|0|0|1.7|4.4|0|0|0|0|223.5
+06 Jul 2026|209.4|9.7|4.8|33.0|0|0|0|0|0|11.0|-44.5|42.3|265.7
+07 Jul 2026|54.8|-24.9|0|-8.4|0|0|0|0|0|0|0|0|21.5
+08 Jul 2026|-59.1|-14.9|0|0|0|0|0|0|0|0|-63.7|52.8|-84.9
+09 Jul 2026|0|-63.3|0.3|-39.9|0|0|0|5.4|0|2.2|0|0|-95.3
+10 Jul 2026|86.8|0|0|0|0|0|0|3.6|0|0|0|0|90.4
+13 Jul 2026|-185.5|-245.6|0|0|0|0|0|6.1|0|0|-53.1|53.4|-424.7
+14 Jul 2026|138.9|21.1|3.5|3.6|0|0|0|0|0|7.4|0|6.6|181.1
+15 Jul 2026|80.8|16.9|0|0|0|0|0|0|0|0|0|10.0|107.7
+16 Jul 2026|33.4|30.7|15.0|0|0|0|0|0|0|0|0|0|79.1
+17 Jul 2026|136.5|-4.2|0|0|0|0|0|0|0|0|0|0|132.3
+20 Jul 2026|116.5|24.1|8.8|72.7|0|0|0|1.8|0|6.9|-45.4|41.4|226.8
+21 Jul 2026|163.9|23.1|0|9.7|0|0|0|0|0|0|0|6.5|203.2
+22 Jul 2026|38.8|21.5|5.4|0|0|0|0|0|0|3.8|-38.3|37.9|69.1
+23 Jul 2026|-202.5|-5.6|-7.0|-4.3|0|-5.6|0|0|-5.1|5.0|0|0|-225.1
+24 Jul 2026|-212.2|-27.9|0|0|0|0|0|0|0|0|0|0|-240.1
+27 Jul 2026|-8.8|-2.8|0|0|0|0|0|0|0|0|0|0|-11.6
+28 Jul 2026|-54.8|0|0|0|0|0|0|0|0|0|0|5.1|-49.7
+29 Jul 2026|89.8|-43.1|0|-14.6|0|0|0|0|0|0|0|0|32.1
+30 Jul 2026|183.4|15.5|20.7|1.5|0|0|0|2.3|0|7.4|0|2.3|233.1
+31 Jul 2026|-122.7|-54.8|-17.8|-17.5|0|0|0|0|0|0|-52.6|0|-265.4
+03 Aug 2026|111.4|33.4|2.8|2.1|6.7|9.2|0|4.5|0|0|0|0|170.1
+04 Aug 2026|170.3|19.6|8.7|9.2|0|0|0|0|0|3.7|0|0|211.5
+05 Aug 2026|196.8|11.3|10.6|37.6|0|0|0|-14.7|0|2.8|0|0|244.4
+06 Aug 2026|128.3|11.2|1.7|0|0|0|0|-32.8|0|14.9|7.5|6.8|137.6
+07 Aug 2026|86.7|41.0|2.1|1.9|-19.4|0|0|-10.6|0|0|0|0|101.7`;
+  let etfRows=[]; let btcRows=[];
+  const $e=id=>document.getElementById(id);
+  function dparse(s){const m=s.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);if(!m)return NaN;const mon={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11}[m[2]];return Date.UTC(+m[3],mon,+m[1],12)}
+  function num(s){s=String(s??'').trim().replace(/,/g,'');if(!s||s==='-'||s==='–')return 0;const neg=/^\(.*\)$/.test(s);s=s.replace(/[()]/g,'');const v=Number(s);return Number.isFinite(v)?(neg?-v:v):0}
+  function parseLines(raw){const rows=[];String(raw).split(/\r?\n/).forEach(line=>{line=line.replace(/^L\d+:\s*/,'').trim();if(!/^\d{1,2}\s+[A-Z][a-z]{2}\s+20\d{2}\s*\|/.test(line))return;const p=line.split('|').map(x=>x.trim());if(p.length<14)return;const ms=dparse(p[0]);if(!Number.isFinite(ms))return;const o={date:p[0],ms};ETFS.forEach((k,i)=>o[k]=num(p[i+1]));o.Total=num(p[13]);rows.push(o)});return rows.sort((a,b)=>a.ms-b.ms)}
+  async function fetchLive(){const urls=['https://r.jina.ai/https://farside.co.uk/bitcoin-etf-flow-all-data/','https://r.jina.ai/http://farside.co.uk/bitcoin-etf-flow-all-data/'];for(const u of urls){try{const r=await fetch(u,{cache:'no-store'});if(!r.ok)continue;const t=await r.text(),rows=parseLines(t);if(rows.length>400)return rows}catch(e){}}throw new Error('Flux Farside indisponible')}
+  function fmt(v,dec=0){if(!Number.isFinite(v))return '—';const sign=v>0?'+':'';return sign+v.toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' M$'}
+  function klass(el,v){if(!el)return;el.classList.remove('positive','negative','neutral');el.classList.add(v>0?'positive':v<0?'negative':'neutral')}
+  function windowRows(days){if(!etfRows.length)return[];const end=etfRows.at(-1).ms,start=end-days*86400000;return etfRows.filter(r=>r.ms>=start)}
+  function sum(rows,key='Total'){return rows.reduce((a,r)=>a+(Number(r[key])||0),0)}
+  function avgLast(n,key='Total'){const a=etfRows.slice(-n);return a.length?sum(a,key)/a.length:NaN}
+  function rolling(rows,n,key='Total'){return rows.map((r,i)=>({ms:r.ms,value:i+1<n?NaN:rows.slice(i-n+1,i+1).reduce((a,x)=>a+x[key],0)/n}))}
+  function rangeData(){const v=document.querySelector('input[name="etfRange"]:checked')?.value||'90';if(v==='all')return etfRows;const d=+v,end=etfRows.at(-1)?.ms||0;return etfRows.filter(r=>r.ms>=end-d*86400000)}
+  function flowSignal(v30,v90){if(v30>1000&&v90>0)return['Accumulation','Demande ETF nettement positive sur 30 jours et confirmée sur 90 jours.'];if(v30<-1000&&v90<0)return['Distribution','Rachats nets importants sur 30 jours, confirmés par la tendance 90 jours.'];if(v30>300)return['Accumulation modérée','Les ETF redeviennent un acheteur marginal net, mais sans impulsion extrême.'];if(v30<-300)return['Distribution modérée','Les ETF restent un vendeur marginal net à court terme.'];return['Neutre','Les flux récents sont proches de l’équilibre : pas de demande marginale ETF dominante.']}
+  function renderKpis(){if(!etfRows.length)return;const latest=etfRows.at(-1),s7=sum(windowRows(7)),s30=sum(windowRows(30)),s90=sum(windowRows(90)),sig=flowSignal(s30,s90);$e('etfLatestFlow').textContent=fmt(latest.Total,1);klass($e('etfLatestFlow'),latest.Total);$e('etfLatestDate').textContent=new Date(latest.ms).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});[['etfFlow7',s7],['etfFlow30',s30],['etfFlow90',s90]].forEach(([id,v])=>{$e(id).textContent=fmt(v,0);klass($e(id),v)});$e('etfSignal').textContent=sig[0];klass($e('etfSignal'),s30);$e('etfSignalSub').textContent=sig[1];const ma7=avgLast(7),ma30=avgLast(30);$e('etfMa7Value').textContent=fmt(ma7,1)+'/séance';klass($e('etfMa7Value'),ma7);$e('etfMa30Value').textContent=fmt(ma30,1)+'/séance';klass($e('etfMa30Value'),ma30);const r30=windowRows(30),i30=sum(r30,'IBIT'),f30=sum(r30,'FBTC'),g30=sum(r30,'GBTC');[['etfIbit30',i30],['etfFbtc30',f30],['etfGbtc30',g30]].forEach(([id,v])=>{$e(id).textContent=fmt(v,0);klass($e(id),v)});$e('etfCowenBadge').textContent=sig[0];$e('etfInterpretation').textContent=`${sig[1]} Sur 30 jours : ${fmt(s30,0)}, contre ${fmt(s90,0)} sur 90 jours. La moyenne des 7 dernières séances est de ${fmt(ma7,1)} par séance et celle des 30 dernières de ${fmt(ma30,1)}. Dans une lecture de cycle façon Cowen, une amélioration durable des flux ETF soutient la liquidité et la participation, mais ne remplace pas les signaux de prix, de risk et de cycle.`}
+  function drawFlow(){const svg=$e('etfFlowChart');if(!svg||!etfRows.length)return;const rows=rangeData(),W=1100,H=500,L=74,R=82,T=28,B=54;const vals=rows.map(r=>r.Total),ma7=rolling(rows,7),ma30=rolling(rows,30);let max=Math.max(100,...vals.map(Math.abs));max*=1.15;const x=(i)=>L+i/Math.max(1,rows.length-1)*(W-L-R), y=v=>T+(max-v)/(2*max)*(H-T-B), y0=y(0);let btc=btcRows.filter(b=>b.ms>=rows[0].ms&&b.ms<=rows.at(-1).ms),bmin=Math.min(...btc.map(b=>b.value)),bmax=Math.max(...btc.map(b=>b.value));const yb=v=>T+(bmax-v)/Math.max(1,bmax-bmin)*(H-T-B);let s=`<rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="rgba(5,14,24,.28)"/><line x1="${L}" y1="${y0}" x2="${W-R}" y2="${y0}" stroke="#8291a6" stroke-width="1"/>`;for(let k=-2;k<=2;k++){const v=max*k/2,yy=y(v);s+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="rgba(130,145,166,.16)"/><text x="${L-8}" y="${yy+4}" text-anchor="end" fill="#9eb0c2" font-size="11">${Math.round(v)}M</text>`}const bw=Math.max(1,Math.min(8,(W-L-R)/rows.length*.72));rows.forEach((r,i)=>{const yy=y(r.Total),h=Math.abs(yy-y0);s+=`<rect data-etf-i="${i}" x="${x(i)-bw/2}" y="${Math.min(yy,y0)}" width="${bw}" height="${Math.max(1,h)}" fill="${r.Total>=0?'#39d98a':'#ff647c'}" opacity=".82"/>`});function path(series,color,w,dash=''){const pts=series.map((p,i)=>Number.isFinite(p.value)?[x(i),y(p.value)]:null).filter(Boolean);if(pts.length<2)return'';return `<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${color}" stroke-width="${w}" ${dash?`stroke-dasharray="${dash}"`:''}/>`}if($e('etfShowMa7')?.checked)s+=path(ma7,'#f6c85f',2.2);if($e('etfShowMa30')?.checked)s+=path(ma30,'#a78bfa',2.2);if($e('etfShowBtc')?.checked&&btc.length>1){const pts=btc.map(b=>[L+(b.ms-rows[0].ms)/(rows.at(-1).ms-rows[0].ms)*(W-L-R),yb(b.value)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="#54a7ff" stroke-width="2" opacity=".9"/>`;s+=`<text x="${W-R+8}" y="${T+12}" fill="#54a7ff" font-size="11">BTC ${Math.round(bmax/1000)}k</text><text x="${W-R+8}" y="${H-B}" fill="#54a7ff" font-size="11">${Math.round(bmin/1000)}k</text>`}const ticks=6;for(let j=0;j<ticks;j++){const i=Math.round(j*(rows.length-1)/(ticks-1)),r=rows[i];s+=`<text x="${x(i)}" y="${H-20}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(r.ms).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</text>`}svg.innerHTML=s;svg.onmousemove=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse()),i=Math.max(0,Math.min(rows.length-1,Math.round((p.x-L)/(W-L-R)*(rows.length-1)))),r=rows[i];$e('etfFlowTooltip').innerHTML=`<b>${new Date(r.ms).toLocaleDateString('fr-FR')}</b> · Total ${fmt(r.Total,1)} · IBIT ${fmt(r.IBIT,1)} · FBTC ${fmt(r.FBTC,1)} · GBTC ${fmt(r.GBTC,1)}`};}
+  function drawCum(){const svg=$e('etfCumulativeChart');if(!svg||!etfRows.length)return;const rows=rangeData(),keys=['IBIT','FBTC','GBTC','Total'].filter(k=>document.querySelector(`[data-etf-cum="${k}"]`)?.checked),colors={IBIT:'#f7931a',FBTC:'#54a7ff',GBTC:'#a78bfa',Total:'#e6edf7'},W=1100,H=430,L=82,R=34,T=24,B=48;let cum={};keys.forEach(k=>cum[k]=[]);let acc={};keys.forEach(k=>acc[k]=0);rows.forEach(r=>keys.forEach(k=>{acc[k]+=r[k]||0;cum[k].push(acc[k])}));const all=keys.flatMap(k=>cum[k]),mn=Math.min(0,...all),mx=Math.max(0,...all),pad=(mx-mn||1)*.1,y=v=>T+(mx+pad-v)/(mx-mn+2*pad)*(H-T-B),x=i=>L+i/Math.max(1,rows.length-1)*(W-L-R);let s=`<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="#8291a6"/>`;keys.forEach(k=>{const pts=cum[k].map((v,i)=>[x(i),y(v)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${colors[k]}" stroke-width="${k==='Total'?3:2}"/><text x="${W-R-4}" y="${y(cum[k].at(-1))-5}" text-anchor="end" fill="${colors[k]}" font-size="11">${k} ${fmt(cum[k].at(-1),0)}</text>`});for(let j=0;j<6;j++){const i=Math.round(j*(rows.length-1)/5);s+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(rows[i].ms).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</text>`}svg.innerHTML=s}
+  function renderTable(){const b=$e('etfRecentBody');if(!b)return;b.innerHTML=etfRows.slice(-20).reverse().map(r=>`<tr><td>${new Date(r.ms).toLocaleDateString('fr-FR')}</td><td>${fmt(r.IBIT,1)}</td><td>${fmt(r.FBTC,1)}</td><td>${fmt(r.GBTC,1)}</td><td><b class="${r.Total>0?'positive':r.Total<0?'negative':'neutral'}">${fmt(r.Total,1)}</b></td></tr>`).join('')}
+  async function loadBtc(){try{if(typeof loadUnifiedBtcDaily==='function'){const u=await loadUnifiedBtcDaily(false);btcRows=u.rows||[]}}catch(e){btcRows=[]}}
+  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v130',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v130')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
+  function init(){if(!$e('etfFlowsPage'))return;$e('refreshEtfFlows')?.addEventListener('click',()=>refresh(true));document.querySelectorAll('input[name="etfRange"],#etfShowBtc,#etfShowMa7,#etfShowMa30,[data-etf-cum]').forEach(el=>el.addEventListener('change',()=>{drawFlow();drawCum()}));refresh(false)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 
 </script>
