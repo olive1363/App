@@ -76,7 +76,7 @@
 
   
 @media (max-width: 760px){
-  /* v130 - optimisation mobile Bitcoin Risk & DCA */
+  /* v132 - optimisation mobile Bitcoin Risk & DCA */
   #page-bitcoin-risk-dca .section,
   #page-bitcoin-risk-dca .card,
   #page-bitcoin-risk-dca .panel{
@@ -135,12 +135,30 @@
 }
 
 
-/* v130 ETF dashboard */
+/* v132 ETF dashboard */
 #etfFlowsPage .etf-kpis{grid-template-columns:repeat(5,minmax(0,1fr));}
 #etfFlowsPage .value.positive,#etfFlowsPage b.positive{color:#39d98a!important}
 #etfFlowsPage .value.negative,#etfFlowsPage b.negative{color:#ff647c!important}
 #etfFlowsPage .value.neutral,#etfFlowsPage b.neutral{color:#f6c85f!important}
 @media(max-width:900px){#etfFlowsPage .etf-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}#etfFlowsPage .etf-kpis .card:last-child{grid-column:1/-1}#etfFlowsPage .risk-backtest-chart{min-height:330px}}
+
+
+@media (max-width: 760px){
+  #page-profit-loss,
+  [data-page="profit-loss"]{
+    padding-bottom:84px !important;
+  }
+  #page-profit-loss .profit-loss-chart-wrap,
+  [data-page="profit-loss"] .profit-loss-chart-wrap{
+    min-height:390px !important;
+  }
+  #page-profit-loss canvas,
+  #page-profit-loss svg,
+  [data-page="profit-loss"] canvas,
+  [data-page="profit-loss"] svg{
+    min-height:360px !important;
+  }
+}
 
 </style>
   <style>
@@ -168,7 +186,7 @@
     @media(max-width:760px){.view-mode-tools{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.actions{flex-wrap:wrap}.v2-component-grid,.page-selection-grid,.page-mode-grid,.v2-dca-grid{grid-template-columns:1fr}.v2-action{font-size:30px}}
   </style>
 
-<style id="v130-mobile-risk-refinements">
+<style id="v132-mobile-risk-refinements">
 @media(max-width:650px){
   /* Bitcoin Risk & DCA : synthèse plus compacte et hiérarchisée */
   #riskPage>.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px;padding:0;overflow:visible}
@@ -209,7 +227,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 130">v130</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 132">v132</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -695,7 +713,7 @@
     </section>
     <section class="panel">
       <div class="panel-head"><div><h2>Bitcoin Profit &amp; Loss Supply</h2><div class="sub">Prix BTC à gauche en échelle logarithmique · pourcentage de l’offre en profit et en perte à droite</div></div><button class="btn primary" id="refreshProfitLoss" type="button">↻ Actualiser</button></div>
-      <div class="tmc-legend"><span><i class="dot" style="background:#54a7ff"></i>Prix BTC</span><span><i class="dot" style="background:#3de0a1"></i>% Supply in Profit</span><span><i class="dot" style="background:#ff5263"></i>% Supply in Loss</span><span><i class="dot" style="background:#f3c969"></i>Croisements 50/50 réels</span><span><i class="dot" style="background:#b486ff"></i>Projection 2026 et fenêtre statistique</span></div>
+      <div class="tmc-legend"><span><i class="dot" style="background:#54a7ff"></i>Prix BTC</span><span><i class="dot" style="background:#3de0a1"></i>% Supply in Profit</span><span><i class="dot" style="background:#ff5263"></i>% Supply in Loss</span><span><i class="dot" style="background:#f3c969"></i>Croisements 50/50 réels · années historiques visibles</span><span><i class="dot" style="background:#b486ff"></i>Projection 2026 et fenêtre statistique</span></div>
       <svg class="profit-loss-chart" id="profitLossChart" viewBox="0 0 1200 620" role="img" aria-label="Prix Bitcoin et pourcentage de l'offre en profit et en perte depuis 2012"></svg>
       <div class="year-tooltip" id="profitLossTooltip" role="status" aria-live="polite"></div>
       <div class="risk-chart-stats" id="profitLossStats"></div>
@@ -3458,7 +3476,7 @@
 
 </script>
 
-<script id="v130-mobile-risk-ui">
+<script id="v132-mobile-risk-ui">
 (()=>{
   const setupMobileRiskSections=()=>{
     const page=document.getElementById('riskPage'); if(!page)return;
@@ -3639,9 +3657,184 @@
   function drawCum(){const svg=$e('etfCumulativeChart');if(!svg||!etfRows.length)return;const rows=rangeData(),keys=['IBIT','FBTC','GBTC','Total'].filter(k=>document.querySelector(`[data-etf-cum="${k}"]`)?.checked),colors={IBIT:'#f7931a',FBTC:'#54a7ff',GBTC:'#a78bfa',Total:'#e6edf7'},W=1100,H=430,L=82,R=34,T=24,B=48;let cum={};keys.forEach(k=>cum[k]=[]);let acc={};keys.forEach(k=>acc[k]=0);rows.forEach(r=>keys.forEach(k=>{acc[k]+=r[k]||0;cum[k].push(acc[k])}));const all=keys.flatMap(k=>cum[k]),mn=Math.min(0,...all),mx=Math.max(0,...all),pad=(mx-mn||1)*.1,y=v=>T+(mx+pad-v)/(mx-mn+2*pad)*(H-T-B),x=i=>L+i/Math.max(1,rows.length-1)*(W-L-R);let s=`<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="#8291a6"/>`;keys.forEach(k=>{const pts=cum[k].map((v,i)=>[x(i),y(v)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${colors[k]}" stroke-width="${k==='Total'?3:2}"/><text x="${W-R-4}" y="${y(cum[k].at(-1))-5}" text-anchor="end" fill="${colors[k]}" font-size="11">${k} ${fmt(cum[k].at(-1),0)}</text>`});for(let j=0;j<6;j++){const i=Math.round(j*(rows.length-1)/5);s+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(rows[i].ms).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</text>`}svg.innerHTML=s}
   function renderTable(){const b=$e('etfRecentBody');if(!b)return;b.innerHTML=etfRows.slice(-20).reverse().map(r=>`<tr><td>${new Date(r.ms).toLocaleDateString('fr-FR')}</td><td>${fmt(r.IBIT,1)}</td><td>${fmt(r.FBTC,1)}</td><td>${fmt(r.GBTC,1)}</td><td><b class="${r.Total>0?'positive':r.Total<0?'negative':'neutral'}">${fmt(r.Total,1)}</b></td></tr>`).join('')}
   async function loadBtc(){try{if(typeof loadUnifiedBtcDaily==='function'){const u=await loadUnifiedBtcDaily(false);btcRows=u.rows||[]}}catch(e){btcRows=[]}}
-  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v130',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v130')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
+  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v132',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v132')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
   function init(){if(!$e('etfFlowsPage'))return;$e('refreshEtfFlows')?.addEventListener('click',()=>refresh(true));document.querySelectorAll('input[name="etfRange"],#etfShowBtc,#etfShowMa7,#etfShowMa30,[data-etf-cum]').forEach(el=>el.addEventListener('change',()=>{drawFlow();drawCum()}));refresh(false)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+
+</script>
+<script>
+
+(function(){
+  function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+  function pageRoot(){
+    return document.getElementById("page-profit-loss")
+      || document.querySelector('[data-page="profit-loss"]')
+      || [...document.querySelectorAll("section,main,div")].find(el=>{
+        const t=norm(el.textContent);
+        return t.includes("bitcoin profit & loss supply") && t.includes("quand les deux pourcentages se croisent");
+      });
+  }
+  function heading(root, txt){
+    const n=norm(txt);
+    return [...root.querySelectorAll("h1,h2,h3,h4,h5,strong,.title,.section-title")].find(el=>norm(el.textContent).includes(n));
+  }
+  function block(el){
+    if(!el) return null;
+    return el.closest("section,.section,.card,.panel,.box,.content-block") || el.parentElement;
+  }
+  function enhance(){
+    const root=pageRoot(); if(!root) return;
+
+    const observed=heading(root,"croisement 2026 deja observe");
+    const observedBlock=block(observed);
+    const chartHead=heading(root,"bitcoin profit & loss supply");
+    const chartBlock=block(chartHead);
+    if(observedBlock && chartBlock && observedBlock!==chartBlock && !observedBlock.dataset.movedNearChart){
+      chartBlock.insertAdjacentElement("afterend", observedBlock);
+      observedBlock.dataset.movedNearChart="1";
+    }
+
+    if(!root.querySelector(".pl-historical-status")){
+      const target=observedBlock || chartBlock;
+      if(target){
+        const card=document.createElement("div");
+        card.className="card pl-historical-status";
+        card.style.marginTop="10px";
+        card.innerHTML='<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.75">2026 vs moyenne historique</div><div style="font-size:24px;font-weight:800;margin-top:4px">Dans la fenêtre historique</div><div style="opacity:.8;margin-top:4px">Croisement réel 2026 comparé à 2014/2018/2022 et à la dispersion ±30 jours.</div>';
+        target.insertAdjacentElement("afterend",card);
+      }
+    }
+
+    // Restore all historical datasets already present in chart objects.
+    const candidates=[window.profitLossChart,window.profitLossSupplyChart,window.chartProfitLoss,window.plChart].filter(Boolean);
+    candidates.forEach(ch=>{
+      if(ch && ch.data && Array.isArray(ch.data.datasets)){
+        ch.data.datasets.forEach(ds=>{
+          const label=norm(ds.label);
+          if(/\b20(1[0-9]|2[0-6])\b/.test(label) || label.includes("profit") || label.includes("loss") || label.includes("btc")){
+            ds.hidden=false;
+          }
+        });
+        if(typeof ch.update==="function") ch.update();
+      }
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",()=>setTimeout(enhance,300));
+  else setTimeout(enhance,300);
+})();
+
+</script>
+<script>
+
+(function(){
+  const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+
+  function ensureStandardIncludesDominance(){
+    // Patch stored arrays/sets used by several versions of the site.
+    const keys=["standardPages","standardPageIds","standardVisiblePages","visibleStandardPages"];
+    keys.forEach(k=>{
+      try{
+        const v=window[k];
+        if(Array.isArray(v) && !v.some(x=>norm(String(x)).includes("dominance"))){
+          const candidates=[...document.querySelectorAll("[data-page],[data-page-id],[id]")];
+          const el=candidates.find(e=>norm(e.textContent).includes("btc dominance"));
+          const id=el?.dataset?.page || el?.dataset?.pageId || el?.id || "btc-dominance";
+          v.push(id);
+        } else if(v instanceof Set){
+          const candidates=[...document.querySelectorAll("[data-page],[data-page-id],[id]")];
+          const el=candidates.find(e=>norm(e.textContent).includes("btc dominance"));
+          const id=el?.dataset?.page || el?.dataset?.pageId || el?.id || "btc-dominance";
+          v.add(id);
+        }
+      }catch(e){}
+    });
+
+    // If the UI is already in Standard mode, unhide the BTC Dominance nav item/page.
+    const all=[...document.querySelectorAll("button,a,[data-page],[data-page-id],section,article,div")];
+    all.forEach(el=>{
+      const t=norm(el.textContent);
+      if(t==="btc dominance" || (t.includes("btc dominance") && t.length<80)){
+        el.classList.remove("hidden","expert-only");
+        if(el.style?.display==="none") el.style.display="";
+      }
+    });
+  }
+
+  async function addBtcPriceToDominance(){
+    // Find a Chart.js-like dominance chart if the page exposes one.
+    const charts=[
+      window.btcDominanceChart,
+      window.dominanceChart,
+      window.chartBtcDominance
+    ].filter(Boolean);
+    if(!charts.length) return;
+
+    // Reuse any already-loaded BTC daily price series from the app if available.
+    let rows =
+      window.bitcoinDailyHistory ||
+      window.btcDailyHistory ||
+      window.bitcoinPriceHistory ||
+      window.btcHistory ||
+      null;
+
+    // Normalize common shapes.
+    function normalizeRows(arr){
+      if(!Array.isArray(arr)) return [];
+      return arr.map(r=>{
+        if(Array.isArray(r)) return {date:r[0], price:Number(r[1] ?? r[4])};
+        return {date:r.date || r.time || r.timestamp, price:Number(r.price ?? r.close ?? r.value)};
+      }).filter(r=>r.date && Number.isFinite(r.price));
+    }
+
+    let priceRows=normalizeRows(rows);
+    if(!priceRows.length) return;
+
+    charts.forEach(ch=>{
+      if(!ch?.data?.labels || !Array.isArray(ch.data.datasets)) return;
+      const labels=ch.data.labels;
+      const map=new Map(priceRows.map(r=>[String(r.date).slice(0,10),r.price]));
+      const vals=labels.map(l=>{
+        const d=String(l).slice(0,10);
+        return map.get(d) ?? null;
+      });
+      if(vals.filter(Number.isFinite).length<5) return;
+
+      // Avoid duplicate insertion.
+      if(ch.data.datasets.some(ds=>norm(ds.label).includes("prix btc"))) return;
+
+      ch.data.datasets.push({
+        label:"Prix BTC",
+        data:vals,
+        yAxisID:"yBTC",
+        borderColor:"#4da3ff",
+        backgroundColor:"transparent",
+        pointRadius:0,
+        borderWidth:1.8,
+        tension:0.15,
+        spanGaps:true
+      });
+
+      ch.options=ch.options||{};
+      ch.options.scales=ch.options.scales||{};
+      ch.options.scales.yBTC={
+        type:"logarithmic",
+        position:"left",
+        display:true,
+        grid:{drawOnChartArea:false},
+        ticks:{color:"#78b9ff"}
+      };
+      if(typeof ch.update==="function") ch.update();
+    });
+  }
+
+  function boot(){
+    ensureStandardIncludesDominance();
+    setTimeout(ensureStandardIncludesDominance,500);
+    setTimeout(addBtcPriceToDominance,700);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
 })();
 
 </script>
