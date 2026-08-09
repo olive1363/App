@@ -74,7 +74,67 @@
       .brand h1{font-size:14px;max-width:125px}.actions .btn{padding:6px 7px}.nav-btn{font-size:9px;padding:6px 8px}.market-chart,.profit-loss-chart,.mvrv-index-chart,.risk-backtest-chart,.year-chart,.fg-chart{aspect-ratio:4/3}
     }
 
-  </style>
+  
+@media (max-width: 760px){
+  /* v129 - optimisation mobile Bitcoin Risk & DCA */
+  #page-bitcoin-risk-dca .section,
+  #page-bitcoin-risk-dca .card,
+  #page-bitcoin-risk-dca .panel{
+    margin-top:8px !important;
+    margin-bottom:8px !important;
+  }
+  #page-bitcoin-risk-dca .kpi-grid,
+  #page-bitcoin-risk-dca .metrics-grid,
+  #page-bitcoin-risk-dca .summary-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  #page-bitcoin-risk-dca .kpi,
+  #page-bitcoin-risk-dca .metric-card,
+  #page-bitcoin-risk-dca .summary-card{
+    min-height:0 !important;
+    padding:10px 11px !important;
+  }
+  #page-bitcoin-risk-dca .kpi .value,
+  #page-bitcoin-risk-dca .metric-value,
+  #page-bitcoin-risk-dca .big-value{
+    font-size:clamp(22px,7vw,30px) !important;
+    line-height:1.05 !important;
+  }
+  #page-bitcoin-risk-dca .subtext,
+  #page-bitcoin-risk-dca .muted,
+  #page-bitcoin-risk-dca .hint{
+    line-height:1.3 !important;
+  }
+  #page-bitcoin-risk-dca canvas,
+  #page-bitcoin-risk-dca svg.bitcoin-risk-chart,
+  #page-bitcoin-risk-dca .chart-wrap canvas{
+    min-height:330px !important;
+    height:330px !important;
+  }
+  #page-bitcoin-risk-dca .chart-wrap{
+    min-height:340px !important;
+  }
+  #page-bitcoin-risk-dca details.mobile-collapse{
+    margin:8px 0 !important;
+  }
+  #page-bitcoin-risk-dca details.mobile-collapse > summary{
+    cursor:pointer;
+    font-weight:700;
+    padding:10px 12px;
+    border:1px solid var(--border,#29415a);
+    border-radius:10px;
+    background:rgba(8,24,40,.35);
+  }
+  #page-bitcoin-risk-dca .mobile-secondary{
+    margin-top:8px !important;
+  }
+  #page-bitcoin-risk-dca .mobile-dca-priority{
+    order:3;
+  }
+}
+
+</style>
   <style>
     .fg-layout{display:grid;grid-template-columns:minmax(330px,.72fr) minmax(560px,1.28fr);gap:12px}.fg-hero{text-align:center}.fg-score{font-size:74px;font-weight:900;line-height:1;margin:22px 0 5px}.fg-track{display:grid;grid-template-columns:25fr 20fr 10fr 20fr 25fr;height:34px;border-radius:10px;overflow:hidden;border:1px solid #31465d;margin:22px 0 7px;position:relative}.fg-track span:nth-child(1){background:#9d2737}.fg-track span:nth-child(2){background:#c86b2c}.fg-track span:nth-child(3){background:#b5a737}.fg-track span:nth-child(4){background:#6da443}.fg-track span:nth-child(5){background:#278b57}.fg-marker{position:absolute;top:-5px;bottom:-5px;width:4px;background:#fff;box-shadow:0 0 10px #fff;transform:translateX(-50%)}.fg-chart{width:100%;height:auto;min-height:350px;background:#020407;border:1px solid #1a2a3c;border-radius:14px;margin-top:12px}.fg-zone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.fg-zone-grid div{padding:9px 5px;border-radius:8px;background:#081523;border:1px solid #263b52;text-align:center;font-size:10px}.fg-zone-grid b{display:block;font-size:12px}.fg-chart-line{fill:none;stroke:#f7b34d;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}.fg-chart-area{fill:#f7b34d;opacity:.12}.fg-grid{stroke:#203247;stroke-width:1}.fg-axis-label{fill:#8fa3bb;font-size:11px}@media(max-width:900px){.fg-layout{display:block}.fg-zone-grid{grid-template-columns:1fr 1fr}.fg-chart{min-height:290px}}
     .tmc-score{font-size:64px}.tmc-chart-line{fill:none;stroke:#54a7ff;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}.tmc-chart-area{fill:#54a7ff;opacity:.12}.tmc-risk-line{fill:none;stroke:#f7931a;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}.tmc-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:11px}
@@ -100,7 +160,7 @@
     @media(max-width:760px){.view-mode-tools{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.actions{flex-wrap:wrap}.v2-component-grid,.page-selection-grid,.page-mode-grid,.v2-dca-grid{grid-template-columns:1fr}.v2-action{font-size:30px}}
   </style>
 
-<style id="v127-mobile-risk-refinements">
+<style id="v129-mobile-risk-refinements">
 @media(max-width:650px){
   /* Bitcoin Risk & DCA : synthèse plus compacte et hiérarchisée */
   #riskPage>.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px;padding:0;overflow:visible}
@@ -141,7 +201,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 127">v127</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 129">v129</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -788,7 +848,7 @@
       </article>
     </section>
     <article class="panel" style="margin-top:12px"><div class="panel-head"><div><h2>Graphique du barème DCA In / DCA Out</h2><div class="sub">Multiplicateurs appliqués selon le Bitcoin Risk principal</div></div><span class="status-pill">In &lt; 0,30 · Out ≥ 0,60</span></div><div class="tmc-legend"><span><i class="dot" style="background:#3de0a1"></i>Multiplicateur DCA In</span><span><i class="dot" style="background:#ff5263"></i>Multiplicateur DCA Out</span><span><i class="dot" style="background:#9aa8b7"></i>Zone d’attente 0,30–0,60</span><span><i class="dot" style="background:#f7931a"></i>Risk principal utilisé</span></div><svg class="dca-plan-chart" id="dcaPlanChart" viewBox="0 0 1000 430" role="img" aria-label="Barèmes DCA In et DCA Out de 0 à 4 selon le Bitcoin Risk principal"></svg><p class="note">Sous 0,30, le DCA In applique × 4, × 2 ou × 1. Entre 0,30 et 0,60, aucune opération. Dès 0,60, le DCA Out progresse de × 1 à × 4 par tranche de 0,10.</p></article>
-    <article class="panel dca-agenda" style="margin-top:12px"><div class="panel-head"><div><h2>Agenda DCA historique</h2><div class="sub">Simulation chaque lundi · achats uniquement lorsque le Bitcoin Risk principal est inférieur à 0,30</div></div><span class="status-pill">Calcul en USD et BTC</span></div><div class="dca-agenda-controls"><label>Date de début<input id="dcaAgendaStart" type="date" value="2026-01-01"></label><label>Date de fin<input id="dcaAgendaEnd" type="date"></label><button class="btn primary" id="refreshDcaAgenda" type="button">Recalculer l’agenda</button></div><div class="year-summary" id="dcaAgendaStats"></div><div class="dca-agenda-scroll"><table class="return-table dca-agenda-table"><thead><tr><th>Lundi</th><th>Risk principal</th><th>Barème</th><th>Prix BTC</th><th>DCA investi</th><th>BTC acquis</th><th>BTC cumulé</th><th>Valeur actuelle</th><th>Gain actuel</th></tr></thead><tbody id="dcaAgendaBody"><tr><td colspan="9">Calcul en cours…</td></tr></tbody></table></div><p class="note" id="dcaAgendaStatus">Les calculs utilisent la dernière observation connue au lundi concerné, sans donnée future. Le DCA Out n’est pas déduit de cette simulation d’accumulation.</p></article>
+    <article class="panel dca-agenda" style="margin-top:12px"><div class="panel-head"><div><h2>Agenda DCA historique</h2><div class="sub">Simulation chaque lundi · même Bitcoin Risk principal recalé Cowen que l’affichage du haut · achats uniquement sous 0,30</div></div><span class="status-pill">Calcul en USD et BTC</span></div><div class="dca-agenda-controls"><label>Date de début<input id="dcaAgendaStart" type="date" value="2026-01-01"></label><label>Date de fin<input id="dcaAgendaEnd" type="date"></label><button class="btn primary" id="refreshDcaAgenda" type="button">Recalculer l’agenda</button></div><div class="year-summary" id="dcaAgendaStats"></div><div class="dca-agenda-scroll"><table class="return-table dca-agenda-table"><thead><tr><th>Lundi</th><th>Risk principal</th><th>Barème</th><th>Prix BTC</th><th>DCA investi</th><th>BTC acquis</th><th>BTC cumulé</th><th>Valeur actuelle</th><th>Gain actuel</th></tr></thead><tbody id="dcaAgendaBody"><tr><td colspan="9">Calcul en cours…</td></tr></tbody></table></div><p class="note" id="dcaAgendaStatus">Les calculs utilisent le Bitcoin Risk principal recalé Cowen, identique au modèle affiché en haut, calculé avec la dernière clôture disponible au lundi concerné et sans donnée future. Le DCA Out n’est pas déduit de cette simulation d’accumulation.</p></article>
   </div>
 
   <div class="page" id="priceMetricsPage">
@@ -2028,11 +2088,19 @@
     return anchors.at(-1).risk;
   }
   function riskHistorySeries(){
-    const rows=newBitcoinRiskHistory().filter(row=>row.date>="2026-01-01");if(rows.length<2)return [];
+    const rows=newBitcoinRiskHistory();if(rows.length<2)return [];
     const out=[];for(let index=0;index<rows.length;index+=7){const row=rows[index];out.push({...row,priceRisk:row.legacyRisk,risk:row.risk,componentCount:2})}
-    const last=rows.at(-1);if(out.length&&last.date!==out.at(-1).date)out.push({...last,priceRisk:last.legacyRisk,risk:last.risk,componentCount:2});return out;
+    const last=rows.at(-1);if(out.length&&last.date!==out.at(-1).date)out.push({...last,priceRisk:last.legacyRisk,risk:last.risk,componentCount:2});return out
   }
-  function buildBitcoinRiskHistorySeries(){return riskHistorySeries()}
+  function buildBitcoinRiskHistorySeries(){
+    const calibration=currentCowenRiskCalibration(),delta=Number.isFinite(calibration.delta)?calibration.delta:0;
+    return newBitcoinRiskHistory().map(point=>{
+      const rawRisk=Number.isFinite(point.rawRisk)?Number(point.rawRisk):Number(point.risk);
+      const rawZ=Number.isFinite(point.z)?Number(point.z):logit(rawRisk);
+      const adjustedRisk=logistic(rawZ+delta);
+      return {...point,rawZ,rawRisk,adjustedRisk,risk:adjustedRisk,priceRisk:point.legacyRisk,componentCount:2}
+    })
+  }
   const RISK_V2_HALVINGS=[
     {date:"2012-11-28",ms:Date.parse("2012-11-28T12:00:00Z")},{date:"2016-07-09",ms:Date.parse("2016-07-09T12:00:00Z")},
     {date:"2020-05-11",ms:Date.parse("2020-05-11T12:00:00Z")},{date:"2024-04-20",ms:Date.parse("2024-04-20T12:00:00Z")},{date:"2028-03-31",ms:Date.parse("2028-03-31T12:00:00Z")}
@@ -3342,7 +3410,7 @@
 
 </script>
 
-<script id="v127-mobile-risk-ui">
+<script id="v129-mobile-risk-ui">
 (()=>{
   const setupMobileRiskSections=()=>{
     const page=document.getElementById('riskPage'); if(!page)return;
@@ -3368,5 +3436,75 @@
 })();
 </script>
 
+<script>
+
+(function(){
+  function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+  function findPage(){
+    return document.getElementById("page-bitcoin-risk-dca")
+      || [...document.querySelectorAll("section,main,div")].find(el=>norm(el.textContent).includes("bitcoin risk principal actuel") && norm(el.textContent).includes("agenda dca historique"));
+  }
+  function closestBlock(el){
+    if(!el) return null;
+    return el.closest("section,.section,.card,.panel,.box,.content-block,details") || el.parentElement;
+  }
+  function headingContains(root, needle){
+    const n=norm(needle);
+    return [...root.querySelectorAll("h1,h2,h3,h4,h5,strong,.title,.section-title,summary")].find(el=>norm(el.textContent).includes(n));
+  }
+  function setupMobile(){
+    if(!window.matchMedia("(max-width: 760px)").matches) return;
+    const page=findPage(); if(!page) return;
+
+    // Remonte Agenda DCA historique juste après le bloc DCA/recommandation principal si possible.
+    const agendaHead=headingContains(page,"agenda dca historique");
+    const agendaBlock=closestBlock(agendaHead);
+    if(agendaBlock && !agendaBlock.dataset.mobileMoved){
+      const dcaHead=headingContains(page,"dca principal") || headingContains(page,"action recommandee") || headingContains(page,"zone d'attente");
+      const dcaBlock=closestBlock(dcaHead);
+      if(dcaBlock && dcaBlock.parentNode){
+        dcaBlock.insertAdjacentElement("afterend", agendaBlock);
+        agendaBlock.classList.add("mobile-dca-priority");
+        agendaBlock.dataset.mobileMoved="1";
+      }
+    }
+
+    // Replie les sections secondaires longues.
+    const needles=[
+      "lecture du risk principal",
+      "historique",
+      "tableau historique",
+      "calibration de la capture",
+      "lien prix",
+      "comprendre",
+      "details du modele",
+      "parametres",
+      "statistiques historiques"
+    ];
+    needles.forEach(label=>{
+      const h=headingContains(page,label);
+      const block=closestBlock(h);
+      if(!block || block.tagName==="DETAILS" || block.dataset.mobileWrapped) return;
+      // Ne replie pas l'agenda DCA ni le graphe principal.
+      const t=norm(block.textContent);
+      if(t.includes("agenda dca historique") || t.includes("controle historique") || t.includes("prix btc")) return;
+      const details=document.createElement("details");
+      details.className="mobile-collapse";
+      const summary=document.createElement("summary");
+      summary.textContent=(h?.textContent||label).trim();
+      const holder=document.createElement("div");
+      holder.className="mobile-secondary";
+      block.parentNode.insertBefore(details,block);
+      details.appendChild(summary);
+      details.appendChild(holder);
+      holder.appendChild(block);
+      block.dataset.mobileWrapped="1";
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setupMobile);
+  else setupMobile();
+})();
+
+</script>
 </body>
 </html>
