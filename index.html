@@ -76,7 +76,7 @@
 
   
 @media (max-width: 760px){
-  /* v135 - optimisation mobile Bitcoin Risk & DCA */
+  /* v136 - optimisation mobile Bitcoin Risk & DCA */
   #page-bitcoin-risk-dca .section,
   #page-bitcoin-risk-dca .card,
   #page-bitcoin-risk-dca .panel{
@@ -135,7 +135,7 @@
 }
 
 
-/* v135 ETF dashboard */
+/* v136 ETF dashboard */
 #etfFlowsPage .etf-kpis{grid-template-columns:repeat(5,minmax(0,1fr));}
 #etfFlowsPage .value.positive,#etfFlowsPage b.positive{color:#39d98a!important}
 #etfFlowsPage .value.negative,#etfFlowsPage b.negative{color:#ff647c!important}
@@ -161,7 +161,7 @@
 }
 
 
-/* v135 - popups universels pour les graphes sans tooltip natif */
+/* v136 - popups universels pour les graphes sans tooltip natif */
 #globalChartPopup{
   position:fixed;
   z-index:99999;
@@ -213,7 +213,7 @@
     @media(max-width:760px){.view-mode-tools{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.actions{flex-wrap:wrap}.v2-component-grid,.page-selection-grid,.page-mode-grid,.v2-dca-grid{grid-template-columns:1fr}.v2-action{font-size:30px}}
   </style>
 
-<style id="v135-mobile-risk-refinements">
+<style id="v136-mobile-risk-refinements">
 @media(max-width:650px){
   /* Bitcoin Risk & DCA : synthèse plus compacte et hiérarchisée */
   #riskPage>.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px;padding:0;overflow:visible}
@@ -254,7 +254,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 135">v135</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 136">v136</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -3505,7 +3505,7 @@
 
 </script>
 
-<script id="v135-mobile-risk-ui">
+<script id="v136-mobile-risk-ui">
 (()=>{
   const setupMobileRiskSections=()=>{
     const page=document.getElementById('riskPage'); if(!page)return;
@@ -3686,7 +3686,7 @@
   function drawCum(){const svg=$e('etfCumulativeChart');if(!svg||!etfRows.length)return;const rows=rangeData(),keys=['IBIT','FBTC','GBTC','Total'].filter(k=>document.querySelector(`[data-etf-cum="${k}"]`)?.checked),colors={IBIT:'#f7931a',FBTC:'#54a7ff',GBTC:'#a78bfa',Total:'#e6edf7'},W=1100,H=430,L=82,R=34,T=24,B=48;let cum={};keys.forEach(k=>cum[k]=[]);let acc={};keys.forEach(k=>acc[k]=0);rows.forEach(r=>keys.forEach(k=>{acc[k]+=r[k]||0;cum[k].push(acc[k])}));const all=keys.flatMap(k=>cum[k]),mn=Math.min(0,...all),mx=Math.max(0,...all),pad=(mx-mn||1)*.1,y=v=>T+(mx+pad-v)/(mx-mn+2*pad)*(H-T-B),x=i=>L+i/Math.max(1,rows.length-1)*(W-L-R);let s=`<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="#8291a6"/>`;keys.forEach(k=>{const pts=cum[k].map((v,i)=>[x(i),y(v)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${colors[k]}" stroke-width="${k==='Total'?3:2}"/><text x="${W-R-4}" y="${y(cum[k].at(-1))-5}" text-anchor="end" fill="${colors[k]}" font-size="11">${k} ${fmt(cum[k].at(-1),0)}</text>`});for(let j=0;j<6;j++){const i=Math.round(j*(rows.length-1)/5);s+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(rows[i].ms).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</text>`}svg.innerHTML=s}
   function renderTable(){const b=$e('etfRecentBody');if(!b)return;b.innerHTML=etfRows.slice(-20).reverse().map(r=>`<tr><td>${new Date(r.ms).toLocaleDateString('fr-FR')}</td><td>${fmt(r.IBIT,1)}</td><td>${fmt(r.FBTC,1)}</td><td>${fmt(r.GBTC,1)}</td><td><b class="${r.Total>0?'positive':r.Total<0?'negative':'neutral'}">${fmt(r.Total,1)}</b></td></tr>`).join('')}
   async function loadBtc(){try{if(typeof loadUnifiedBtcDaily==='function'){const u=await loadUnifiedBtcDaily(false);btcRows=u.rows||[]}}catch(e){btcRows=[]}}
-  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v135',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v135')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
+  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v136',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v136')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
   function init(){if(!$e('etfFlowsPage'))return;$e('refreshEtfFlows')?.addEventListener('click',()=>refresh(true));document.querySelectorAll('input[name="etfRange"],#etfShowBtc,#etfShowMa7,#etfShowMa30,[data-etf-cum]').forEach(el=>el.addEventListener('change',()=>{drawFlow();drawCum()}));refresh(false)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
@@ -3868,14 +3868,13 @@
 
 </script>
 <script>
-
 (function(){
   const popup=document.createElement("div");
   popup.id="globalChartPopup";
   popup.innerHTML='<div class="gcp-title"></div><div class="gcp-body"></div>';
   document.addEventListener("DOMContentLoaded",()=>document.body.appendChild(popup));
 
-  const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+  const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
   const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   const fmt=v=>{
     if(v==null || v==="") return "—";
@@ -3883,6 +3882,7 @@
       if(!Number.isFinite(v)) return "—";
       if(Math.abs(v)>=100000) return new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(v);
       if(Math.abs(v)>=1000) return new Intl.NumberFormat("fr-FR",{maximumFractionDigits:1}).format(v);
+      if(Math.abs(v)>=100) return new Intl.NumberFormat("fr-FR",{maximumFractionDigits:2}).format(v);
       return new Intl.NumberFormat("fr-FR",{maximumFractionDigits:3}).format(v);
     }
     return String(v);
@@ -3913,7 +3913,6 @@
     try{
       if(window.Chart?.getChart) return Chart.getChart(canvas) || null;
     }catch(e){}
-    // fallback scan common globals
     for(const k of Object.keys(window)){
       let v;
       try{v=window[k]}catch(e){continue}
@@ -3922,18 +3921,50 @@
     return null;
   }
 
-  function nearestChartJsPoint(ch,e){
-    if(!ch) return null;
+  function rawValueAt(ds,index){
+    const raw=ds?.data?.[index];
+    if(raw==null) return null;
+    if(typeof raw==="number") return raw;
+    if(typeof raw==="object"){
+      if(Number.isFinite(raw.y)) return raw.y;
+      if(Number.isFinite(raw.r)) return raw.r;
+      if(Number.isFinite(raw.value)) return raw.value;
+      if(Number.isFinite(raw.close)) return raw.close;
+      if(Number.isFinite(raw.price)) return raw.price;
+      if(Number.isFinite(raw.x) && !("y" in raw)) return raw.x;
+    }
+    return raw;
+  }
+
+  function nearestChartJsIndex(ch,e){
     try{
-      const pts=ch.getElementsAtEventForMode?.(e,"nearest",{intersect:false},false) || [];
-      if(!pts.length) return null;
-      const p=pts[0], ds=ch.data.datasets?.[p.datasetIndex], label=ch.data.labels?.[p.index];
-      if(!ds) return null;
-      const raw=ds.data?.[p.index];
-      let val=raw;
-      if(raw && typeof raw==="object") val=raw.y ?? raw.r ?? raw.value ?? raw.x;
-      return {label,dataset:ds.label||("Série "+(p.datasetIndex+1)),value:val};
-    }catch(err){return null}
+      const pts=ch.getElementsAtEventForMode?.(e,"index",{intersect:false},false)
+        || ch.getElementsAtEventForMode?.(e,"nearest",{intersect:false},false)
+        || [];
+      if(pts.length) return pts[0].index;
+    }catch(err){}
+    return null;
+  }
+
+  function dateLabel(ch,index){
+    let label=ch?.data?.labels?.[index];
+    if(label==null){
+      for(const ds of (ch?.data?.datasets||[])){
+        const raw=ds?.data?.[index];
+        if(raw && typeof raw==="object"){
+          label=raw.x ?? raw.date ?? raw.time ?? raw.timestamp;
+          if(label!=null) break;
+        }
+      }
+    }
+    if(label==null) return "—";
+    // Try to present ISO dates nicely without altering non-date labels.
+    const s=String(label);
+    if(/^\d{4}-\d{2}-\d{2}/.test(s)){
+      const d=new Date(s.slice(0,10)+"T12:00:00");
+      if(!Number.isNaN(d.getTime())) return d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});
+    }
+    return s;
   }
 
   function nativeTooltipActive(ch){
@@ -3949,50 +3980,82 @@
     const c=e.currentTarget;
     const ch=chartJsInstance(c);
     if(ch){
+      // Keep native tooltip when it already shows content.
       if(nativeTooltipActive(ch)){ hide(); return; }
-      const p=nearestChartJsPoint(ch,e);
-      if(p){
-        show(e,chartTitle(c),[
-          ["Date / point",p.label ?? "—"],
-          [p.dataset,p.value]
-        ]);
-        return;
+
+      const idx=nearestChartJsIndex(ch,e);
+      if(idx!=null){
+        const rows=[["Date",dateLabel(ch,idx)]];
+        (ch.data.datasets||[]).forEach((ds,di)=>{
+          // Respect hidden datasets / legend visibility.
+          let visible=true;
+          try{
+            if(ch.isDatasetVisible) visible=ch.isDatasetVisible(di);
+            else if(ds.hidden===true) visible=false;
+          }catch(err){}
+          if(!visible) return;
+
+          const val=rawValueAt(ds,idx);
+          if(val==null || (typeof val==="number" && !Number.isFinite(val))) return;
+
+          let label=ds.label || ("Série "+(di+1));
+          // Preserve useful unit hints already present in labels.
+          rows.push([label,val]);
+        });
+        if(rows.length>1){
+          show(e,chartTitle(c),rows);
+          return;
+        }
       }
     }
-    // Generic fallback only for canvases that don't have a native tooltip.
-    const r=c.getBoundingClientRect();
-    const x=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));
-    const y=Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100));
-    show(e,chartTitle(c),[
-      ["Position X",x.toFixed(1)+" %"],
-      ["Position Y",(100-y).toFixed(1)+" %"]
-    ]);
+
+    // No fake "position X/Y" anymore: if graph values are unavailable,
+    // don't show a misleading popup.
+    hide();
+  }
+
+  function nearestSvgDatum(svg,e){
+    // First use explicit data attributes if the chart provides them.
+    const direct=e.target?.closest?.("[data-date],[data-value],[data-price],[data-risk],[data-percent],[data-label]");
+    if(direct){
+      const rows=[];
+      const d=direct.dataset||{};
+      if(d.date) rows.push(["Date",d.date]);
+      Object.entries(d).forEach(([k,v])=>{
+        if(k==="date" || v==null || v==="") return;
+        rows.push([k.replace(/([A-Z])/g," $1").replace(/[-_]/g," "),v]);
+      });
+      if(rows.length) return rows;
+    }
+
+    // For SVG charts made of point elements, look for the closest point having data values.
+    const candidates=[...svg.querySelectorAll("[data-date],[data-value],[data-price],[data-risk],[data-percent]")];
+    if(!candidates.length) return null;
+    let best=null,bestDist=Infinity;
+    for(const el of candidates){
+      const r=el.getBoundingClientRect();
+      const cx=r.left+r.width/2, cy=r.top+r.height/2;
+      const dist=(cx-e.clientX)**2+(cy-e.clientY)**2;
+      if(dist<bestDist){bestDist=dist;best=el}
+    }
+    if(!best) return null;
+    const rows=[];
+    const d=best.dataset||{};
+    if(d.date) rows.push(["Date",d.date]);
+    Object.entries(d).forEach(([k,v])=>{
+      if(k==="date" || v==null || v==="") return;
+      rows.push([k.replace(/([A-Z])/g," $1").replace(/[-_]/g," "),v]);
+    });
+    return rows.length?rows:null;
   }
 
   function handleSvg(e){
     const svg=e.currentTarget;
-    const target=e.target;
-    // If browser-native <title> exists, don't duplicate it.
-    if(target?.querySelector?.(":scope > title") || target?.closest?.("g")?.querySelector?.(":scope > title")){ hide(); return; }
-
-    const datum = target?.dataset || {};
-    const rows=[];
-    for(const [k,v] of Object.entries(datum)){
-      if(v!=null && v!=="") rows.push([k.replace(/[-_]/g," "),v]);
-    }
-
-    // Common attributes used by custom SVG charts.
-    for(const k of ["aria-label","data-label","data-date","data-value","data-price","data-risk","data-percent"]){
-      const v=target?.getAttribute?.(k);
-      if(v && !rows.some(r=>r[1]===v)) rows.push([k.replace(/^data-/,"").replace(/-/g," "),v]);
-    }
-
-    if(!rows.length){
-      const txt=target?.textContent?.trim();
-      if(txt && txt.length<80) rows.push(["Valeur",txt]);
-    }
-    if(!rows.length) return hide();
-    show(e,chartTitle(svg),rows.slice(0,6));
+    // Respect native SVG title tooltips.
+    if(e.target?.querySelector?.(":scope > title") || e.target?.closest?.("g")?.querySelector?.(":scope > title")){ hide(); return; }
+    const rows=nearestSvgDatum(svg,e);
+    if(rows?.length) show(e,chartTitle(svg),rows.slice(0,12));
+    else hide();
   }
 
   function attach(){
@@ -4002,7 +4065,8 @@
       c.addEventListener("mousemove",handleCanvas,{passive:true});
       c.addEventListener("mouseleave",hide,{passive:true});
       c.addEventListener("touchstart",ev=>{
-        const t=ev.touches?.[0]; if(t) handleCanvas({currentTarget:c,clientX:t.clientX,clientY:t.clientY});
+        const t=ev.touches?.[0];
+        if(t) handleCanvas({currentTarget:c,clientX:t.clientX,clientY:t.clientY});
       },{passive:true});
     });
     document.querySelectorAll("svg").forEach(s=>{
@@ -4020,11 +4084,9 @@
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",attach);
   else attach();
 
-  // Attach to graphs created dynamically after page changes.
   const mo=new MutationObserver(()=>attach());
   document.addEventListener("DOMContentLoaded",()=>mo.observe(document.body,{childList:true,subtree:true}));
 })();
-
 </script>
 </body>
 </html>
