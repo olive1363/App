@@ -76,7 +76,7 @@
 
   
 @media (max-width: 760px){
-  /* v141 - optimisation mobile Bitcoin Risk & DCA */
+  /* v142 - optimisation mobile Bitcoin Risk & DCA */
   #page-bitcoin-risk-dca .section,
   #page-bitcoin-risk-dca .card,
   #page-bitcoin-risk-dca .panel{
@@ -135,7 +135,7 @@
 }
 
 
-/* v141 ETF dashboard */
+/* v142 ETF dashboard */
 #etfFlowsPage .etf-kpis{grid-template-columns:repeat(5,minmax(0,1fr));}
 #etfFlowsPage .value.positive,#etfFlowsPage b.positive{color:#39d98a!important}
 #etfFlowsPage .value.negative,#etfFlowsPage b.negative{color:#ff647c!important}
@@ -161,7 +161,7 @@
 }
 
 
-/* v141 - popups universels pour les graphes sans tooltip natif */
+/* v142 - popups universels pour les graphes sans tooltip natif */
 #globalChartPopup{
   position:fixed;
   z-index:99999;
@@ -207,7 +207,7 @@
 }
 
 
-/* v141 - étiquettes de la spirale sans chevauchement */
+/* v142 - étiquettes de la spirale sans chevauchement */
 #cycleChart .event text{
   dominant-baseline:alphabetic;
 }
@@ -222,7 +222,7 @@
 }
 
 
-/* v141 · Short-Term Holder Bands sur la page cycle */
+/* v142 · Short-Term Holder Bands sur la page cycle */
 .sth-band-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .sth-band-card{border:1px solid rgba(140,186,255,.16);border-radius:16px;padding:12px 14px;background:linear-gradient(180deg,rgba(14,24,42,.82),rgba(5,11,20,.9))}
 .sth-band-card .value{font-size:28px;font-weight:850;line-height:1.02}
@@ -271,7 +271,7 @@
     @media(max-width:760px){.view-mode-tools{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.actions{flex-wrap:wrap}.v2-component-grid,.page-selection-grid,.page-mode-grid,.v2-dca-grid{grid-template-columns:1fr}.v2-action{font-size:30px}}
   </style>
 
-<style id="v141-mobile-risk-refinements">
+<style id="v142-mobile-risk-refinements">
 @media(max-width:650px){
   /* Bitcoin Risk & DCA : synthèse plus compacte et hiérarchisée */
   #riskPage>.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px;padding:0;overflow:visible}
@@ -312,7 +312,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 141">v141</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 142">v142</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -2248,11 +2248,11 @@
   }
   function openRiskEntry(){try{return JSON.parse(localStorage.getItem("btc-open-risk-ma365")||"null")}catch(e){return null}}
   function openRiskHistory(){try{const rows=JSON.parse(localStorage.getItem("btc-open-risk-ma365-history")||"[]");return Array.isArray(rows)?rows:[]}catch(e){return []}}
-  const NEW_RISK_ORIGIN_MS=Date.UTC(2010,6,18,12),NEW_RISK_COEFFICIENTS=[-0.5384218729383421,1.3882364099250453,0.7139435798847495,0.17834914875366298,0.14134852092076333,0.4095360685507325,0.2848536708197883,0.1817201287225567],CURRENT_COWEN_RISK_REFERENCE={date:"2026-08-03",ms:Date.UTC(2026,7,3,12),price:62634,risk:.296,source:"Point Cowen communiqué le 3 août 2026"};
+  const NEW_RISK_ORIGIN_MS=Date.UTC(2010,6,18,12),NEW_RISK_COEFFICIENTS=[-0.5384218729383421,1.3882364099250453,0.7139435798847495,0.17834914875366298,0.14134852092076333,0.4095360685507325,0.2848536708197883,0.1817201287225567],CURRENT_COWEN_RISK_REFERENCE={date:"2026-08-10",ms:Date.UTC(2026,7,10,12),price:64450,risk:.365,source:"Capture Cowen du 10 août 2026 · Bitcoin Risk 0,365 · BTC 64 450 $"};
   function logistic(value){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,value))))}
   function logit(value){const p=Math.max(.000001,Math.min(.999999,Number(value)));return Math.log(p/(1-p))}
   function newRiskScore(extension,ageTerm){const [c0,c1,c2,c3,c4,c5,c6,c7]=NEW_RISK_COEFFICIENTS,e=Number(extension),a=Number(ageTerm);return Number.isFinite(e)&&Number.isFinite(a)?c0+c1*e+c2*a+c3*e*e+c4*e*e*e+c5*e*a+c6*e*e*a+c7*a*a:NaN}
-  function ensureCurrentCowenReference(){try{if(localStorage.getItem("btc-cowen-reference-20260803-v85")==="1")return;const list=riskEntries().filter(entry=>String(entry.date||"")!==CURRENT_COWEN_RISK_REFERENCE.date);list.push({value:CURRENT_COWEN_RISK_REFERENCE.risk,price:CURRENT_COWEN_RISK_REFERENCE.price,date:CURRENT_COWEN_RISK_REFERENCE.date,source:CURRENT_COWEN_RISK_REFERENCE.source,timeRisk:NaN,block:null,at:new Date().toISOString()});list.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));localStorage.setItem("btc-risk-history",JSON.stringify(list.slice(0,100)));localStorage.setItem("btc-cowen-reference-20260803-v85","1")}catch(error){}}
+  function ensureCurrentCowenReference(){try{if(localStorage.getItem("btc-cowen-reference-20260810-v142")==="1")return;const list=riskEntries().filter(entry=>String(entry.date||"")!==CURRENT_COWEN_RISK_REFERENCE.date);list.push({value:CURRENT_COWEN_RISK_REFERENCE.risk,price:CURRENT_COWEN_RISK_REFERENCE.price,date:CURRENT_COWEN_RISK_REFERENCE.date,source:CURRENT_COWEN_RISK_REFERENCE.source,timeRisk:NaN,block:null,at:new Date().toISOString()});list.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));localStorage.setItem("btc-risk-history",JSON.stringify(list.slice(0,100)));localStorage.setItem("btc-cowen-reference-20260810-v142","1")}catch(error){}}
   ensureCurrentCowenReference();
   function newBitcoinRiskHistory(){
     const source=openRiskHistory().map(row=>{const date=String(row.date||"").slice(0,10),ms=Date.parse(date+"T12:00:00Z"),price=Number(row.price),legacyRisk=Number(row.risk);return {date,ms,price,legacyRisk}}).filter(row=>Number.isFinite(row.ms)&&Number.isFinite(row.price)&&row.price>0).sort((a,b)=>a.ms-b.ms),result=[],window=[],day=86400000;let sum=0,left=0;
@@ -3683,7 +3683,7 @@
 
 </script>
 
-<script id="v141-mobile-risk-ui">
+<script id="v142-mobile-risk-ui">
 (()=>{
   const setupMobileRiskSections=()=>{
     const page=document.getElementById('riskPage'); if(!page)return;
@@ -3864,7 +3864,7 @@
   function drawCum(){const svg=$e('etfCumulativeChart');if(!svg||!etfRows.length)return;const rows=rangeData(),keys=['IBIT','FBTC','GBTC','Total'].filter(k=>document.querySelector(`[data-etf-cum="${k}"]`)?.checked),colors={IBIT:'#f7931a',FBTC:'#54a7ff',GBTC:'#a78bfa',Total:'#e6edf7'},W=1100,H=430,L=82,R=34,T=24,B=48;let cum={};keys.forEach(k=>cum[k]=[]);let acc={};keys.forEach(k=>acc[k]=0);rows.forEach(r=>keys.forEach(k=>{acc[k]+=r[k]||0;cum[k].push(acc[k])}));const all=keys.flatMap(k=>cum[k]),mn=Math.min(0,...all),mx=Math.max(0,...all),pad=(mx-mn||1)*.1,y=v=>T+(mx+pad-v)/(mx-mn+2*pad)*(H-T-B),x=i=>L+i/Math.max(1,rows.length-1)*(W-L-R);let s=`<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="#8291a6"/>`;keys.forEach(k=>{const pts=cum[k].map((v,i)=>[x(i),y(v)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${colors[k]}" stroke-width="${k==='Total'?3:2}"/><text x="${W-R-4}" y="${y(cum[k].at(-1))-5}" text-anchor="end" fill="${colors[k]}" font-size="11">${k} ${fmt(cum[k].at(-1),0)}</text>`});for(let j=0;j<6;j++){const i=Math.round(j*(rows.length-1)/5);s+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(rows[i].ms).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</text>`}svg.innerHTML=s}
   function renderTable(){const b=$e('etfRecentBody');if(!b)return;b.innerHTML=etfRows.slice(-20).reverse().map(r=>`<tr><td>${new Date(r.ms).toLocaleDateString('fr-FR')}</td><td>${fmt(r.IBIT,1)}</td><td>${fmt(r.FBTC,1)}</td><td>${fmt(r.GBTC,1)}</td><td><b class="${r.Total>0?'positive':r.Total<0?'negative':'neutral'}">${fmt(r.Total,1)}</b></td></tr>`).join('')}
   async function loadBtc(){try{if(typeof loadUnifiedBtcDaily==='function'){const u=await loadUnifiedBtcDaily(false);btcRows=u.rows||[]}}catch(e){btcRows=[]}}
-  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v141',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v141')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
+  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v142',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v142')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
   function init(){if(!$e('etfFlowsPage'))return;$e('refreshEtfFlows')?.addEventListener('click',()=>refresh(true));document.querySelectorAll('input[name="etfRange"],#etfShowBtc,#etfShowMa7,#etfShowMa30,[data-etf-cum]').forEach(el=>el.addEventListener('change',()=>{drawFlow();drawCum()}));refresh(false)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
