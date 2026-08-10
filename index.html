@@ -76,7 +76,7 @@
 
   
 @media (max-width: 760px){
-  /* v142 - optimisation mobile Bitcoin Risk & DCA */
+  /* v143 - optimisation mobile Bitcoin Risk & DCA */
   #page-bitcoin-risk-dca .section,
   #page-bitcoin-risk-dca .card,
   #page-bitcoin-risk-dca .panel{
@@ -135,7 +135,7 @@
 }
 
 
-/* v142 ETF dashboard */
+/* v143 ETF dashboard */
 #etfFlowsPage .etf-kpis{grid-template-columns:repeat(5,minmax(0,1fr));}
 #etfFlowsPage .value.positive,#etfFlowsPage b.positive{color:#39d98a!important}
 #etfFlowsPage .value.negative,#etfFlowsPage b.negative{color:#ff647c!important}
@@ -161,7 +161,7 @@
 }
 
 
-/* v142 - popups universels pour les graphes sans tooltip natif */
+/* v143 - popups universels pour les graphes sans tooltip natif */
 #globalChartPopup{
   position:fixed;
   z-index:99999;
@@ -207,7 +207,7 @@
 }
 
 
-/* v142 - étiquettes de la spirale sans chevauchement */
+/* v143 - étiquettes de la spirale sans chevauchement */
 #cycleChart .event text{
   dominant-baseline:alphabetic;
 }
@@ -222,7 +222,7 @@
 }
 
 
-/* v142 · Short-Term Holder Bands sur la page cycle */
+/* v143 · Short-Term Holder Bands sur la page cycle */
 .sth-band-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .sth-band-card{border:1px solid rgba(140,186,255,.16);border-radius:16px;padding:12px 14px;background:linear-gradient(180deg,rgba(14,24,42,.82),rgba(5,11,20,.9))}
 .sth-band-card .value{font-size:28px;font-weight:850;line-height:1.02}
@@ -271,7 +271,7 @@
     @media(max-width:760px){.view-mode-tools{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.actions{flex-wrap:wrap}.v2-component-grid,.page-selection-grid,.page-mode-grid,.v2-dca-grid{grid-template-columns:1fr}.v2-action{font-size:30px}}
   </style>
 
-<style id="v142-mobile-risk-refinements">
+<style id="v143-mobile-risk-refinements">
 @media(max-width:650px){
   /* Bitcoin Risk & DCA : synthèse plus compacte et hiérarchisée */
   #riskPage>.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px;padding:0;overflow:visible}
@@ -312,7 +312,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 142">v142</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 143">v143</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -1743,7 +1743,35 @@
     merged.filter((row,index)=>index%interactionStep===0||index===merged.length-1).forEach(row=>{const point=svgEl("circle",{cx:x(row),cy:y(row.value),r:8,fill:"transparent",stroke:"transparent",tabindex:"0","aria-label":`MVRV ${row.value.toFixed(2)}, ${new Date(row.ms).toLocaleDateString("fr-FR")}, Bitcoin ${Number.isFinite(row.price)?fmtPrice(row.price):"indisponible"}`});point.addEventListener("pointerenter",event=>showTip(event,row));point.addEventListener("pointermove",event=>showTip(event,row));point.addEventListener("focus",event=>showTip(event,row));point.addEventListener("pointerleave",hideTip);point.addEventListener("blur",hideTip);svg.append(point)});
     const latest=merged.at(-1),minimum=rows.reduce((best,row)=>row.value<best.value?row:best,rows[0]),maximum=rows.reduce((best,row)=>row.value>best.value?row:best,rows[0]);stats.innerHTML=`<div class="year-stat"><span class="label">Dernière valeur</span><b style="color:#f7931a">${latest.value.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})}</b><span class="sub">${new Date(latest.ms).toLocaleDateString("fr-FR")} · BTC ${Number.isFinite(latest.price)?fmtPrice(latest.price):"—"}</span></div><div class="year-stat"><span class="label">Minimum depuis 2012</span><b>${minimum.value.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})}</b><span class="sub">${new Date(minimum.ms).toLocaleDateString("fr-FR")}</span></div><div class="year-stat"><span class="label">Maximum depuis 2012</span><b>${maximum.value.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})}</b><span class="sub">${new Date(maximum.ms).toLocaleDateString("fr-FR")}</span></div><div class="year-stat"><span class="label">Observations</span><b>${rows.length.toLocaleString("fr-FR")}</b><span class="sub">Survolez le graphique pour afficher date, MVRV et prix BTC</span></div>`;status.textContent=`Historique MVRV et prix BTC chargé du ${new Date(rows[0].ms).toLocaleDateString("fr-FR")} au ${new Date(latest.ms).toLocaleDateString("fr-FR")}.`;
   }
-  async function refreshMvrvHistory(){const button=$("refreshMvrvHistory");if(!mvrvSeriesCache){mvrvSeriesCache=fallbackCoreRows("mvrv");drawMvrvIndex();$("mvrvIndexStatus").textContent+=" · Actualisation en cours…"}if(button){button.disabled=true;button.textContent="Actualisation…"}try{const result=await fetchCoreMetric(["mvrv_z_std"]);mvrvSeriesCache=normalizeCoreSingle(result.data).map(row=>({...row,ms:Date.parse(row.date+"T12:00:00Z")})).filter(row=>row.date>="2026-01-01");drawMvrvIndex()}catch(error){mvrvSeriesCache=fallbackCoreRows("mvrv");drawMvrvIndex();$("mvrvIndexStatus").textContent+=" · Secours hebdomadaire intégré arrêté au 2 août 2026."}finally{if(button){button.disabled=false;button.textContent="↻ Actualiser le graphique"}}}
+  async function refreshMvrvHistory(){
+    const button=$("refreshMvrvHistory");
+    if(!mvrvSeriesCache){
+      mvrvSeriesCache=fallbackCoreRows("mvrv");
+      drawMvrvIndex();
+      $("mvrvIndexStatus").textContent+=" · Actualisation en cours…";
+    }
+    if(button){button.disabled=true;button.textContent="Actualisation…"}
+    try{
+      const result=await fetchCoreMetric(["mvrv_z_std","mvrv_z_score","mvrv_zscore"]);
+      const rows=normalizeCoreSingle(result.data)
+        .map(row=>({...row,date:String(row.date||"").slice(0,10),value:Number(row.value),ms:Date.parse(String(row.date||"").slice(0,10)+"T12:00:00Z")}))
+        .filter(row=>/^\d{4}-\d{2}-\d{2}$/.test(row.date)&&Number.isFinite(row.value)&&Number.isFinite(row.ms))
+        .sort((a,b)=>a.ms-b.ms);
+      if(!rows.length)throw Error("Historique MVRV vide");
+      mvrvSeriesCache=rows;
+      drawMvrvIndex();
+      const latest=rows.at(-1);
+      saveMvrvEntry(latest.value,latest.date,"Core Charts");
+      $("mvrvIndexStatus").textContent="Historique Core Charts actualisé jusqu’au "+new Date(latest.date+"T12:00:00Z").toLocaleDateString("fr-FR");
+    }catch(error){
+      mvrvSeriesCache=fallbackCoreRows("mvrv");
+      drawMvrvIndex();
+      $("mvrvIndexStatus").textContent+=" · Core Charts inaccessible. Secours graphique intégré ; valeur actuelle : capture Cowen du 10 août 2026.";
+      saveMvrvEntry(.197,"2026-08-10","Capture Cowen");
+    }finally{
+      if(button){button.disabled=false;button.textContent="↻ Actualiser le graphique"}
+    }
+  }
   function firstDownCross(rows,year){const exactFallback={2014:"2014-09-18",2018:"2018-11-14",2022:"2022-09-06",2026:"2026-06-05"};if(rows.length<1000&&exactFallback[year])return {date:exactFallback[year],profit:50,loss:50};for(let index=1;index<rows.length;index++){const prior=rows[index-1],row=rows[index];if(Number(row.date.slice(0,4))===year&&prior.profit-prior.loss>0&&row.profit-row.loss<=0)return row}return null}
   function dayOfYear(date){const d=new Date(date+"T12:00:00Z");return Math.floor((d-Date.UTC(d.getUTCFullYear(),0,1,12))/86400000)+1}
   function drawProfitLoss(){
@@ -2201,17 +2229,38 @@
     filtered.unshift(entry);localStorage.setItem("btc-mvrv-history",JSON.stringify(filtered.slice(0,100)));renderMvrv();
   }
   async function refreshMvrv(){
-    const btn=$("refreshMvrv"),status=$("mvrvStatus");btn.disabled=true;btn.textContent="Actualisation…";status.textContent="Connexion à Core Charts…";
-    const official="https://corecharts.com/api/v1/metrics/series-daily?metric_key=mvrv_z_std&include_kpi=1&resolution=1d";
-    const urls=[official,"https://api.allorigins.win/raw?url="+encodeURIComponent(official)];
+    const btn=$("refreshMvrv"),status=$("mvrvStatus");
+    if(btn){btn.disabled=true;btn.textContent="Actualisation…"}
+    if(status)status.textContent="Connexion à Core Charts…";
     try{
-      let data=null;
-      for(const url of urls){try{data=await fetchJSON(url,15000);if(data)break}catch(e){}}
-      const series=Array.isArray(data?.series)?data.series:[],last=series[series.length-1],value=Number(data?.kpi?.current?.value??last?.[1]),sourceDate=last?.[0]||data?.meta?.last_ingested_at;
-      if(!Number.isFinite(value))throw Error("Valeur absente");
-      saveMvrvEntry(value,sourceDate,"Core Charts");status.textContent="Automatique · Core Charts";toast("MVRV actualisé : "+value.toLocaleString("fr-FR",{maximumFractionDigits:4}));
-    }catch(e){const fallback=fallbackCoreRows("mvrv").at(-1);if(fallback){saveMvrvEntry(fallback.value,fallback.date,"Secours intégré");status.textContent="Secours intégré · 2 août 2026";toast("MVRV chargé depuis le secours intégré")}else{status.textContent="Actualisation indisponible";toast("Core Charts inaccessible · saisie manuelle disponible")}}
-    finally{btn.disabled=false;btn.textContent="↻ Actualiser le MVRV"}
+      const result=await fetchCoreMetric(["mvrv_z_std","mvrv_z_score","mvrv_zscore"]);
+      const rows=normalizeCoreSingle(result.data)
+        .map(row=>({...row,date:String(row.date||"").slice(0,10),value:Number(row.value)}))
+        .filter(row=>/^\d{4}-\d{2}-\d{2}$/.test(row.date)&&Number.isFinite(row.value))
+        .sort((a,b)=>a.date.localeCompare(b.date));
+      const latest=rows.at(-1);
+      const kpiValue=Number(result.data?.kpi?.current?.value ?? result.data?.kpi?.value);
+      const value=Number.isFinite(kpiValue)?kpiValue:Number(latest?.value);
+      const sourceDate=latest?.date || String(result.data?.meta?.last_ingested_at||new Date().toISOString()).slice(0,10);
+      if(!Number.isFinite(value))throw Error("Valeur MVRV absente");
+      saveMvrvEntry(value,sourceDate,"Core Charts");
+      if(status)status.textContent="Automatique · Core Charts · "+new Date(sourceDate+"T12:00:00Z").toLocaleDateString("fr-FR");
+      toast("MVRV actualisé : "+value.toLocaleString("fr-FR",{maximumFractionDigits:4}));
+      // Synchronise aussi le graphe historique avec la même réponse.
+      if(rows.length){
+        mvrvSeriesCache=rows.map(row=>({...row,ms:Date.parse(row.date+"T12:00:00Z")}));
+        drawMvrvIndex();
+      }
+    }catch(e){
+      // La capture Cowen du 10 août 2026 fournit un MVRV Z-Score de 0,197.
+      // On l'utilise seulement comme secours récent et on l'étiquette explicitement.
+      const cowenFallback={value:.197,date:"2026-08-10"};
+      saveMvrvEntry(cowenFallback.value,cowenFallback.date,"Capture Cowen");
+      if(status)status.textContent="Secours · capture Cowen · 10 août 2026";
+      toast("Core Charts inaccessible · MVRV 0,197 chargé depuis la capture Cowen du 10 août");
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent="↻ Actualiser le MVRV"}
+    }
   }
   function mvrvProfile(v){
     if(v<0)return {name:"Capitulation",dca:"Renforcement fort",color:"#54a7ff",text:"Le marché se situe sous la base de coût agrégée. Historiquement, cette zone rare a correspondu aux phases de capitulation et d'accumulation, à confirmer avec le cycle et le Bitcoin Risk."};
@@ -2226,8 +2275,8 @@
     if(!last)return;
     const v=Number(last.value),p=mvrvProfile(v),pos=Math.max(0,Math.min(100,(v+2)/11*100));
     $("mvrvCardValue").textContent=$("mvrvBig").textContent=v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
-    $("mvrvSavedAt").textContent=(last.source==="Core Charts"?"Core Charts · valeur du ":last.source==="Secours intégré"?"Secours intégré · valeur du ":"Enregistré le ")+(last.sourceDate&&/^\d{4}-\d{2}-\d{2}/.test(last.sourceDate)?new Date(last.sourceDate+"T12:00:00Z").toLocaleDateString("fr-FR"):new Date(last.at).toLocaleString("fr-FR"));
-    $("mvrvStatus").textContent=last.source==="Core Charts"?"Automatique · Core Charts":last.source==="Secours intégré"?"Secours intégré · 2 août 2026":"Saisie manuelle";
+    $("mvrvSavedAt").textContent=(last.source==="Core Charts"?"Core Charts · valeur du ":last.source==="Capture Cowen"?"Capture Cowen · valeur du ":last.source==="Secours intégré"?"Secours intégré · valeur du ":"Enregistré le ")+(last.sourceDate&&/^\d{4}-\d{2}-\d{2}/.test(last.sourceDate)?new Date(last.sourceDate+"T12:00:00Z").toLocaleDateString("fr-FR"):new Date(last.at).toLocaleString("fr-FR"));
+    $("mvrvStatus").textContent=last.source==="Core Charts"?"Automatique · Core Charts":last.source==="Capture Cowen"?"Secours · capture Cowen · 10 août 2026":last.source==="Secours intégré"?"Secours intégré · 2 août 2026":"Saisie manuelle";
     $("mvrvRegime").textContent=p.name;$("mvrvRegime").style.color=p.color;$("mvrvDca").textContent=p.dca;$("mvrvDca").style.color=p.color;
     $("mvrvReadingTitle").textContent="Lecture : "+p.name;$("mvrvReading").textContent=p.text;
     $("mvrvMarker").hidden=false;$("mvrvMarker").style.left=pos+"%";$("mvrvInput").value=v;
@@ -2252,7 +2301,7 @@
   function logistic(value){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,value))))}
   function logit(value){const p=Math.max(.000001,Math.min(.999999,Number(value)));return Math.log(p/(1-p))}
   function newRiskScore(extension,ageTerm){const [c0,c1,c2,c3,c4,c5,c6,c7]=NEW_RISK_COEFFICIENTS,e=Number(extension),a=Number(ageTerm);return Number.isFinite(e)&&Number.isFinite(a)?c0+c1*e+c2*a+c3*e*e+c4*e*e*e+c5*e*a+c6*e*e*a+c7*a*a:NaN}
-  function ensureCurrentCowenReference(){try{if(localStorage.getItem("btc-cowen-reference-20260810-v142")==="1")return;const list=riskEntries().filter(entry=>String(entry.date||"")!==CURRENT_COWEN_RISK_REFERENCE.date);list.push({value:CURRENT_COWEN_RISK_REFERENCE.risk,price:CURRENT_COWEN_RISK_REFERENCE.price,date:CURRENT_COWEN_RISK_REFERENCE.date,source:CURRENT_COWEN_RISK_REFERENCE.source,timeRisk:NaN,block:null,at:new Date().toISOString()});list.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));localStorage.setItem("btc-risk-history",JSON.stringify(list.slice(0,100)));localStorage.setItem("btc-cowen-reference-20260810-v142","1")}catch(error){}}
+  function ensureCurrentCowenReference(){try{if(localStorage.getItem("btc-cowen-reference-20260810-v143")==="1")return;const list=riskEntries().filter(entry=>String(entry.date||"")!==CURRENT_COWEN_RISK_REFERENCE.date);list.push({value:CURRENT_COWEN_RISK_REFERENCE.risk,price:CURRENT_COWEN_RISK_REFERENCE.price,date:CURRENT_COWEN_RISK_REFERENCE.date,source:CURRENT_COWEN_RISK_REFERENCE.source,timeRisk:NaN,block:null,at:new Date().toISOString()});list.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));localStorage.setItem("btc-risk-history",JSON.stringify(list.slice(0,100)));localStorage.setItem("btc-cowen-reference-20260810-v143","1")}catch(error){}}
   ensureCurrentCowenReference();
   function newBitcoinRiskHistory(){
     const source=openRiskHistory().map(row=>{const date=String(row.date||"").slice(0,10),ms=Date.parse(date+"T12:00:00Z"),price=Number(row.price),legacyRisk=Number(row.risk);return {date,ms,price,legacyRisk}}).filter(row=>Number.isFinite(row.ms)&&Number.isFinite(row.price)&&row.price>0).sort((a,b)=>a.ms-b.ms),result=[],window=[],day=86400000;let sum=0,left=0;
@@ -3683,7 +3732,7 @@
 
 </script>
 
-<script id="v142-mobile-risk-ui">
+<script id="v143-mobile-risk-ui">
 (()=>{
   const setupMobileRiskSections=()=>{
     const page=document.getElementById('riskPage'); if(!page)return;
@@ -3864,7 +3913,7 @@
   function drawCum(){const svg=$e('etfCumulativeChart');if(!svg||!etfRows.length)return;const rows=rangeData(),keys=['IBIT','FBTC','GBTC','Total'].filter(k=>document.querySelector(`[data-etf-cum="${k}"]`)?.checked),colors={IBIT:'#f7931a',FBTC:'#54a7ff',GBTC:'#a78bfa',Total:'#e6edf7'},W=1100,H=430,L=82,R=34,T=24,B=48;let cum={};keys.forEach(k=>cum[k]=[]);let acc={};keys.forEach(k=>acc[k]=0);rows.forEach(r=>keys.forEach(k=>{acc[k]+=r[k]||0;cum[k].push(acc[k])}));const all=keys.flatMap(k=>cum[k]),mn=Math.min(0,...all),mx=Math.max(0,...all),pad=(mx-mn||1)*.1,y=v=>T+(mx+pad-v)/(mx-mn+2*pad)*(H-T-B),x=i=>L+i/Math.max(1,rows.length-1)*(W-L-R);let s=`<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="#8291a6"/>`;keys.forEach(k=>{const pts=cum[k].map((v,i)=>[x(i),y(v)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${colors[k]}" stroke-width="${k==='Total'?3:2}"/><text x="${W-R-4}" y="${y(cum[k].at(-1))-5}" text-anchor="end" fill="${colors[k]}" font-size="11">${k} ${fmt(cum[k].at(-1),0)}</text>`});for(let j=0;j<6;j++){const i=Math.round(j*(rows.length-1)/5);s+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(rows[i].ms).toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</text>`}svg.innerHTML=s}
   function renderTable(){const b=$e('etfRecentBody');if(!b)return;b.innerHTML=etfRows.slice(-20).reverse().map(r=>`<tr><td>${new Date(r.ms).toLocaleDateString('fr-FR')}</td><td>${fmt(r.IBIT,1)}</td><td>${fmt(r.FBTC,1)}</td><td>${fmt(r.GBTC,1)}</td><td><b class="${r.Total>0?'positive':r.Total<0?'negative':'neutral'}">${fmt(r.Total,1)}</b></td></tr>`).join('')}
   async function loadBtc(){try{if(typeof loadUnifiedBtcDaily==='function'){const u=await loadUnifiedBtcDaily(false);btcRows=u.rows||[]}}catch(e){btcRows=[]}}
-  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v142',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v142')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
+  async function refresh(force=false){const st=$e('etfDataStatus');if(st)st.textContent='Mise à jour Farside…';let live=true;try{etfRows=await fetchLive();try{localStorage.setItem('btc-etf-farside-v143',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}}catch(e){live=false;try{const c=JSON.parse(localStorage.getItem('btc-etf-farside-v143')||'null');if(Array.isArray(c?.rows)&&c.rows.length>20){etfRows=c.rows;live='cache'}else etfRows=parseLines(fallback)}catch(x){etfRows=parseLines(fallback)}}await loadBtc();renderKpis();drawFlow();drawCum();renderTable();if(st){const d=etfRows.at(-1);st.textContent=live===true?`Farside · direct · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${new Date(d.ms).toLocaleDateString('fr-FR')}`}}
   function init(){if(!$e('etfFlowsPage'))return;$e('refreshEtfFlows')?.addEventListener('click',()=>refresh(true));document.querySelectorAll('input[name="etfRange"],#etfShowBtc,#etfShowMa7,#etfShowMa30,[data-etf-cum]').forEach(el=>el.addEventListener('change',()=>{drawFlow();drawCum()}));refresh(false)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
