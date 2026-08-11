@@ -308,15 +308,38 @@
 @media(min-width:651px){#riskPage .mobile-section-toggle{display:none!important}}
 </style>
 
+
+<style id="v146-options-volatility-style">
+/* v146 · BVIV / options volatility */
+#optionsVolatilityPage .ov-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+#optionsVolatilityPage .ov-kpi{padding:14px;border:1px solid #29405a;border-radius:13px;background:#081523}
+#optionsVolatilityPage .ov-kpi .value{font-size:25px}
+#optionsVolatilityPage .ov-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+#optionsVolatilityPage .ov-ranges{display:flex;gap:6px;flex-wrap:wrap}
+#optionsVolatilityPage .ov-range{border:1px solid #29405a;border-radius:9px;background:#071421;color:#bcd4ec;padding:7px 10px;cursor:pointer}
+#optionsVolatilityPage .ov-range.active{border-color:#f7931a;background:#2a1909;color:#ffbd6d;font-weight:800}
+#optionsVolatilityPage .ov-chart{position:relative;min-height:430px;border:1px solid #1d3045;border-radius:12px;background:#071421;overflow:hidden}
+#optionsVolatilityPage .ov-chart svg{display:block;width:100%;height:auto;min-height:430px}
+#optionsVolatilityPage .ov-tooltip{position:absolute;z-index:4;display:none;pointer-events:none;min-width:155px;padding:9px 11px;border:1px solid #425b75;border-radius:9px;background:#07111df2;color:#e7f0f8;font-size:12px;box-shadow:0 10px 28px #0008}
+#optionsVolatilityPage .ov-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#9bb0c5;font-size:12px}
+#optionsVolatilityPage .ov-dot{width:8px;height:8px;border-radius:50%;background:#697f94;display:inline-block}
+#optionsVolatilityPage .ov-dot.live{background:#58d68d;box-shadow:0 0 0 3px #58d68d22}
+#optionsVolatilityPage .ov-reading{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+#optionsVolatilityPage .ov-reading>div{padding:12px;border:1px solid #29405a;border-radius:11px;background:#081523}
+#optionsVolatilityPage .ov-note{margin-top:10px;padding:12px;border-left:3px solid #f7931a;background:#f7931a0c;border-radius:8px;color:#cfe3f8}
+@media(max-width:900px){#optionsVolatilityPage .ov-kpis{grid-template-columns:1fr 1fr}#optionsVolatilityPage .ov-reading{grid-template-columns:1fr}}
+@media(max-width:650px){#optionsVolatilityPage .ov-kpis{grid-template-columns:1fr 1fr}#optionsVolatilityPage .ov-kpi{padding:11px}#optionsVolatilityPage .ov-kpi .value{font-size:21px}#optionsVolatilityPage .ov-chart{min-height:360px;margin-left:-12px;margin-right:-12px;border-left:0;border-right:0;border-radius:0}#optionsVolatilityPage .ov-chart svg{min-height:360px}.ov-toolbar .btn{width:100%}}
+</style>
+
 </head>
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 145">v145</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v146</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
-  <nav class="main-nav" aria-label="Pages"><button class="nav-btn active" data-page="homePage">Comprendre Bitcoin</button><button class="nav-btn" data-page="riskPage">Bitcoin Risk &amp; DCA</button><button class="nav-btn" data-page="yearsPage">BTC Year-To-Date ROI</button><button class="nav-btn" data-page="btcDominancePage">BTC Dominance</button><button class="nav-btn" data-page="monthlyReturnsPage">Monthly Returns</button><button class="nav-btn" data-page="cowenMemoPage">Mémo Cowen · Juil. 2026</button><button class="nav-btn" data-page="bottomWatchPage">Bottom Watch</button><button class="nav-btn" data-page="breadthPage">Largeur du marché</button><button class="nav-btn" data-page="participationScoresPage">Scores Participation &amp; Liquidité</button><button class="nav-btn" data-page="etfFlowsPage">Flux ETF</button><button class="nav-btn" data-page="tradingPage">BTC</button><button class="nav-btn" data-page="fiboSwannyPage">FiboSwanny</button><button class="nav-btn" data-page="ethPage">ETH</button><button class="nav-btn" data-page="ethBtcPage">ETH/BTC</button><button class="nav-btn" data-page="cyclePage">Cycles</button><button class="nav-btn" data-page="cycleBottomRoiPage">ROI depuis point bas</button><button class="nav-btn" data-page="bottomPage">Point bas</button><button class="nav-btn" data-page="cowenHistoricalPage">Historical Risk Cowen</button><button class="nav-btn" data-page="riskControlPage">Contrôle Risk</button><button class="nav-btn" data-page="dcaPage">Risque global</button><button class="nav-btn" data-page="priceMetricsPage">Price</button><button class="nav-btn" data-page="fearGreedPage">Fear &amp; Greed</button><button class="nav-btn" data-page="totalMarketCapPage">Total Market Cap</button><button class="nav-btn" data-page="volatilityPage">Volatilité</button><button class="nav-btn" data-page="onchainMetricsPage">On-chain</button><button class="nav-btn" data-page="cycleMetricsPage">Cycle</button><button class="nav-btn" data-page="socialMetricsPage">Social</button><button class="nav-btn" data-page="mvrvPage">MVRV</button><button class="nav-btn" data-page="profitLossPage">Profit &amp; Loss</button></nav>
+  <nav class="main-nav" aria-label="Pages"><button class="nav-btn active" data-page="homePage">Comprendre Bitcoin</button><button class="nav-btn" data-page="riskPage">Bitcoin Risk &amp; DCA</button><button class="nav-btn" data-page="yearsPage">BTC Year-To-Date ROI</button><button class="nav-btn" data-page="btcDominancePage">BTC Dominance</button><button class="nav-btn" data-page="monthlyReturnsPage">Monthly Returns</button><button class="nav-btn" data-page="cowenMemoPage">Mémo Cowen · Juil. 2026</button><button class="nav-btn" data-page="bottomWatchPage">Bottom Watch</button><button class="nav-btn" data-page="breadthPage">Largeur du marché</button><button class="nav-btn" data-page="participationScoresPage">Scores Participation &amp; Liquidité</button><button class="nav-btn" data-page="etfFlowsPage">Flux ETF</button><button class="nav-btn" data-page="tradingPage">BTC</button><button class="nav-btn" data-page="fiboSwannyPage">FiboSwanny</button><button class="nav-btn" data-page="ethPage">ETH</button><button class="nav-btn" data-page="ethBtcPage">ETH/BTC</button><button class="nav-btn" data-page="cyclePage">Cycles</button><button class="nav-btn" data-page="cycleBottomRoiPage">ROI depuis point bas</button><button class="nav-btn" data-page="bottomPage">Point bas</button><button class="nav-btn" data-page="cowenHistoricalPage">Historical Risk Cowen</button><button class="nav-btn" data-page="riskControlPage">Contrôle Risk</button><button class="nav-btn" data-page="dcaPage">Risque global</button><button class="nav-btn" data-page="priceMetricsPage">Price</button><button class="nav-btn" data-page="fearGreedPage">Fear &amp; Greed</button><button class="nav-btn" data-page="totalMarketCapPage">Total Market Cap</button><button class="nav-btn" data-page="volatilityPage">Volatilité</button><button class="nav-btn" data-page="optionsVolatilityPage">Options &amp; Volatilité</button><button class="nav-btn" data-page="onchainMetricsPage">On-chain</button><button class="nav-btn" data-page="cycleMetricsPage">Cycle</button><button class="nav-btn" data-page="socialMetricsPage">Social</button><button class="nav-btn" data-page="mvrvPage">MVRV</button><button class="nav-btn" data-page="profitLossPage">Profit &amp; Loss</button></nav>
 
   <div class="page active" id="homePage">
     <section class="panel home-hero">
@@ -1313,6 +1336,50 @@
       <p class="note" id="ethMonthlyReturnsStatus">Les clôtures quotidiennes ETH/USD sont chargées depuis les mêmes sources que la page ETH.</p>
     </section>
     </div>
+  </div>
+
+
+  <div class="page" id="optionsVolatilityPage">
+    <section class="panel">
+      <div class="panel-head">
+        <div><span class="label">Marché des options · Volmex</span><h2>BVIV · volatilité implicite Bitcoin</h2><div class="sub">Volatilité implicite prospective à 30 jours. Mise à jour automatique via l’API publique Volmex (résolution quotidienne).</div></div>
+        <button class="btn" id="refreshOptionsVolatility" type="button">↻ Actualiser BVIV</button>
+      </div>
+      <div class="ov-kpis">
+        <div class="ov-kpi"><div class="label">BVIV actuel</div><div class="value" id="ovCurrent">—</div><div class="sub" id="ovCurrentDate">Dernière observation disponible</div></div>
+        <div class="ov-kpi"><div class="label">Variation 7 jours</div><div class="value" id="ovChange7">—</div><div class="sub">Variation en points de volatilité</div></div>
+        <div class="ov-kpi"><div class="label">Percentile historique</div><div class="value" id="ovPercentile">—</div><div class="sub">Position du BVIV actuel dans l’historique chargé</div></div>
+        <div class="ov-kpi"><div class="label">Amplitude 12 mois</div><div class="value" id="ovYearRange">—</div><div class="sub">Minimum → maximum sur 365 jours</div></div>
+      </div>
+      <div class="ov-status"><span class="ov-dot" id="ovLiveDot"></span><span id="ovStatus">Chargement des données Volmex…</span></div>
+    </section>
+
+    <section class="panel">
+      <div class="ov-toolbar">
+        <div class="ov-ranges" aria-label="Période du graphique">
+          <button type="button" class="ov-range" data-ov-range="1y">1 an</button>
+          <button type="button" class="ov-range active" data-ov-range="3y">3 ans</button>
+          <button type="button" class="ov-range" data-ov-range="5y">5 ans</button>
+          <button type="button" class="ov-range" data-ov-range="all">Tout</button>
+        </div>
+        <label class="form-check"><input class="form-check-input" id="ovShowRealized" type="checkbox"><span class="form-check-label">Comparer à la volatilité réalisée 30 j</span></label>
+      </div>
+      <div class="ov-chart" id="ovChartWrap">
+        <svg id="ovChart" viewBox="0 0 1200 500" role="img" aria-label="Historique de l’indice de volatilité Bitcoin BVIV"></svg>
+        <div class="ov-tooltip" id="ovTooltip"></div>
+      </div>
+      <div class="sub" style="margin-top:9px">Les repères horizontaux 35,59 % et 90 % correspondent aux niveaux cités en août 2026 et février 2026. Ils servent de repères visuels, pas de seuils d’achat ou de vente.</div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><span class="label">Lecture DCA Plus</span><h2>Comment interpréter la compression de volatilité</h2></div></div>
+      <div class="ov-reading">
+        <div><b>BVIV bas</b><div class="sub">Le marché des options anticipe des mouvements plus faibles. Une compression peut durer et ne donne pas la direction du prochain mouvement.</div></div>
+        <div><b>BVIV en hausse</b><div class="sub">Le prix de l’assurance et des paris sur de grands mouvements augmente. À lire avec le Risk, le cycle et le skew puts/calls.</div></div>
+        <div><b>BVIV vs réalisé</b><div class="sub">Si l’implicite est nettement au-dessus de la volatilité réalisée, les options intègrent une prime de risque plus forte.</div></div>
+      </div>
+      <div class="ov-note" id="ovInterpretation">Le BVIV complète le Bitcoin Risk : il mesure l’intensité anticipée des mouvements, pas si Bitcoin est cher ou bon marché.</div>
+    </section>
   </div>
 
   <div class="page" id="pageSelectorPage">
@@ -3391,7 +3458,7 @@ async function refreshMvrv(){
   const tradingPage=$("tradingPage"),tradingMarketPanel=$("tradingMarketPanel"),tradingCards=tradingPage?.querySelector(".cards");if(tradingPage&&tradingMarketPanel&&tradingCards)tradingCards.after(tradingMarketPanel);
   const mvrvPage=$("mvrvPage"),mvrvGraphPanel=$("mvrvIndexChart")?.closest("section.panel");if(mvrvPage&&mvrvGraphPanel)mvrvPage.prepend(mvrvGraphPanel);
   const momentumNav=document.createElement("button");momentumNav.className="nav-btn";momentumNav.dataset.page="momentumPage";momentumNav.textContent="Momentum Cowen";document.querySelector(".main-nav")?.append(momentumNav);
-  const DEFAULT_STANDARD_PAGE_IDS=["homePage","riskPage","yearsPage","btcDominancePage","monthlyReturnsPage","cowenMemoPage","bottomWatchPage","participationScoresPage","tradingPage","fiboSwannyPage","ethPage","ethBtcPage","cyclePage","cycleBottomRoiPage","mvrvPage","profitLossPage"];
+  const DEFAULT_STANDARD_PAGE_IDS=["homePage","riskPage","yearsPage","btcDominancePage","monthlyReturnsPage","cowenMemoPage","bottomWatchPage","participationScoresPage","tradingPage","fiboSwannyPage","ethPage","ethBtcPage","cyclePage","cycleBottomRoiPage","optionsVolatilityPage","mvrvPage","profitLossPage"];
   let btcDominanceCache=null,btcDomIncludeStables=false,btcDomScale="linear",btcDomRange="all";
   function btcDomFallback(){
     const pts=[["2013-07-01",94],["2014-01-01",91],["2015-01-01",88],["2016-01-01",87],["2017-01-01",86],["2017-07-01",44],["2018-01-01",36],["2018-03-01",31],["2019-01-01",52],["2020-01-01",68],["2021-01-01",70],["2021-05-15",41],["2022-01-01",40],["2022-09-01",40],["2023-01-01",44],["2024-01-01",51],["2025-01-01",58],["2025-07-01",66],["2026-01-01",63],["2026-08-01",67.8]];
@@ -3420,9 +3487,9 @@ async function refreshMvrv(){
     const last=rows.at(-1),recent=rows.filter(r=>r.ms>=Date.UTC(2021,0,1)),high=recent.reduce((a,b)=>!a||b.value>a.value?b:a,null),before=nearestTradingPoint(rows,last.ms-90*86400000),delta=before?last.value-before.value:NaN;$("btcDomCurrent").textContent=last.value.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" %";$("btcDomCurrentSub").textContent=`${btcDomIncludeStables?"Stablecoins inclus":"Stablecoins exclus"} · ${new Date(last.ms).toLocaleDateString("fr-FR")}`;$("btcDomModeValue").textContent=btcDomIncludeStables?"Avec stables":"Hors stables";$("btcDomRecentHigh").textContent=high?high.value.toLocaleString("fr-FR",{maximumFractionDigits:2})+" %":"—";$("btcDomRecentHighSub").textContent=high?new Date(high.ms).toLocaleDateString("fr-FR"):"Depuis 2021";$("btcDomTrend90").textContent=Number.isFinite(delta)?`${delta>=0?"+":""}${delta.toLocaleString("fr-FR",{maximumFractionDigits:2})} pts`:"—";$("btcDomTrend90").className="value "+(delta>=0?"ok":"warn");$("btcDomTrend90Sub").textContent=delta>=0?"Bitcoin gagne de la dominance":"Rotation relative vers les altcoins";$("btcDomMaLegend").style.display=ma.length?"":"none";
   }
   async function refreshBtcDominance(force=false){const status=$("btcDominanceStatus"),btn=$("refreshBtcDominance");if(btn){btn.disabled=true;btn.textContent="Chargement…"}try{if(!btcDominanceCache||force)btcDominanceCache=await fetchBtcDominanceSeries();status.textContent="Données de capitalisation CoinCodex · dominance + prix BTC historique du site sur axe gauche logarithmique."}catch(error){btcDominanceCache=btcDomFallback();status.innerHTML='<span class="source-warning">Source en ligne indisponible : courbe de secours indicative reconstruite d’après les repères visuels de la capture Cowen.</span>'}finally{if(btn){btn.disabled=false;btn.textContent="↻ Actualiser"}drawBtcDominance()}}
-  const PAGE_DESCRIPTIONS={homePage:"Guide et vidéos",riskPage:"Formule historique détaillée",yearsPage:"Comparaison annuelle",btcDominancePage:"Dominance de Bitcoin avec ou sans stablecoins",monthlyReturnsPage:"Rendements mensuels BTC / ETH",cowenMemoPage:"Synthèse du mémo de juillet 2026",bottomWatchPage:"Statut de formation du creux",breadthPage:"Participation et dominance corrigée",participationScoresPage:"Scores séparés de sommet et de creux",etfFlowsPage:"Demande institutionnelle ETF",tradingPage:"BTC · prix et repères de marché",fiboSwannyPage:"Graphiques Fibonacci FiboSwanny",ethPage:"Ethereum, moyennes, risque et force relative",ethBtcPage:"Ratio ETH/BTC et moyennes mobiles",cyclePage:"Spirale et cycles",cycleBottomRoiPage:"ROI BTC aligné sur les points bas de cycle",bottomPage:"Projection du prochain creux",cowenHistoricalPage:"Courbe Cowen reconstituée",riskControlPage:"Calibration et backtest",dcaPage:"Synthèse multi-indicateurs",priceMetricsPage:"Indicateurs de prix",fearGreedPage:"Sentiment de marché",totalMarketCapPage:"Risque de la capitalisation",volatilityPage:"Risque de volatilité",onchainMetricsPage:"Indicateurs on-chain",cycleMetricsPage:"Indicateurs temporels",socialMetricsPage:"Indicateurs sociaux",mvrvPage:"MVRV Z-Score",profitLossPage:"Supply in profit et loss",momentumPage:"Momentum selon Cowen"};
+  const PAGE_DESCRIPTIONS={homePage:"Guide et vidéos",riskPage:"Formule historique détaillée",yearsPage:"Comparaison annuelle",btcDominancePage:"Dominance de Bitcoin avec ou sans stablecoins",monthlyReturnsPage:"Rendements mensuels BTC / ETH",cowenMemoPage:"Synthèse du mémo de juillet 2026",bottomWatchPage:"Statut de formation du creux",breadthPage:"Participation et dominance corrigée",participationScoresPage:"Scores séparés de sommet et de creux",etfFlowsPage:"Demande institutionnelle ETF",tradingPage:"BTC · prix et repères de marché",fiboSwannyPage:"Graphiques Fibonacci FiboSwanny",ethPage:"Ethereum, moyennes, risque et force relative",ethBtcPage:"Ratio ETH/BTC et moyennes mobiles",cyclePage:"Spirale et cycles",cycleBottomRoiPage:"ROI BTC aligné sur les points bas de cycle",bottomPage:"Projection du prochain creux",cowenHistoricalPage:"Courbe Cowen reconstituée",riskControlPage:"Calibration et backtest",dcaPage:"Synthèse multi-indicateurs",priceMetricsPage:"Indicateurs de prix",fearGreedPage:"Sentiment de marché",totalMarketCapPage:"Risque de la capitalisation",volatilityPage:"Risque de volatilité",optionsVolatilityPage:"BVIV, options et volatilité implicite",onchainMetricsPage:"Indicateurs on-chain",cycleMetricsPage:"Indicateurs temporels",socialMetricsPage:"Indicateurs sociaux",mvrvPage:"MVRV Z-Score",profitLossPage:"Supply in profit et loss",momentumPage:"Momentum selon Cowen"};
   function customPageIds(){try{const saved=JSON.parse(localStorage.getItem("btc-visible-pages")||"[]");return Array.isArray(saved)?saved:[]}catch(error){return []}}
-  function standardPageIds(){const all=[...document.querySelectorAll(".nav-btn[data-page]")].map(button=>button.dataset.page);try{const saved=JSON.parse(localStorage.getItem("btc-standard-pages")||"[]"),valid=Array.isArray(saved)?saved.filter(id=>all.includes(id)&&id!=="bottomPage"):[];if(valid.length){const required=["riskPage","yearsPage","btcDominancePage","cycleBottomRoiPage"];return [...new Set([...required,...valid])]}}catch(error){}return DEFAULT_STANDARD_PAGE_IDS.filter(id=>all.includes(id))}
+  function standardPageIds(){const all=[...document.querySelectorAll(".nav-btn[data-page]")].map(button=>button.dataset.page);try{const saved=JSON.parse(localStorage.getItem("btc-standard-pages")||"[]"),valid=Array.isArray(saved)?saved.filter(id=>all.includes(id)&&id!=="bottomPage"):[];if(valid.length){const required=["riskPage","yearsPage","btcDominancePage","cycleBottomRoiPage","optionsVolatilityPage"];return [...new Set([...required,...valid])]}}catch(error){}return DEFAULT_STANDARD_PAGE_IDS.filter(id=>all.includes(id))}
   function pageUsageCounts(){try{const value=JSON.parse(localStorage.getItem("btc-page-usage")||"{}");return value&&typeof value==="object"?value:{}}catch(error){return {}}}
   function recordPageUsage(pageId){if(!pageId||pageId==="pageSelectorPage")return;const counts=pageUsageCounts();counts[pageId]=(Number(counts[pageId])||0)+1;localStorage.setItem("btc-page-usage",JSON.stringify(counts));if(localStorage.getItem("btc-page-order")==="usage")sortNavigationByUsage(false)}
   function sortNavigationByUsage(showMessage=true){const nav=document.querySelector(".main-nav"),counts=pageUsageCounts();if(!nav)return;const buttons=[...nav.querySelectorAll(".nav-btn[data-page]")];buttons.sort((a,b)=>(Number(counts[b.dataset.page])||0)-(Number(counts[a.dataset.page])||0)||Number(a.dataset.originalOrder||0)-Number(b.dataset.originalOrder||0)).forEach(button=>nav.append(button));localStorage.setItem("btc-page-order","usage");renderPageSelection();if(showMessage)toast("Pages triées selon leur fréquence d’utilisation")}
@@ -3440,7 +3507,7 @@ async function refreshMvrv(){
   document.querySelectorAll("[data-monthly-mode]").forEach(button=>button.addEventListener("click",()=>{monthlyMode=button.dataset.monthlyMode;localStorage.setItem("btc-monthly-mode",monthlyMode);renderMonthlyReturns()}));
   $("refreshParticipationScores")?.addEventListener("click",()=>refreshParticipationScores(true));
   $("refreshBottomWatch")?.addEventListener("click",()=>{toast("Bottom Watch recalculé avec les références Cowen du 15 juillet 2026")});
-  document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>{recordPageUsage(b.dataset.page);document.querySelectorAll(".nav-btn").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===b.dataset.page));localStorage.setItem("btc-page",b.dataset.page);if(["riskPage","dcaPage","priceMetricsPage","totalMarketCapPage","onchainMetricsPage","cycleMetricsPage","socialMetricsPage"].includes(b.dataset.page))renderDca();if(b.dataset.page==="riskPage"){startTradingSpotStream();refreshTradingSpot(false)}if(b.dataset.page==="riskControlPage"){renderCalibrationHistory();renderCalibrationSummary(calibrationInputs(),calibrationResults[0])}if(b.dataset.page==="cowenHistoricalPage")drawCowenHistoricalPage();if(b.dataset.page==="fearGreedPage")renderFearGreed();if(b.dataset.page==="bottomPage")renderBottom();if(b.dataset.page==="volatilityPage")renderVolatility();if(b.dataset.page==="momentumPage")drawMomentumChart();if(b.dataset.page==="yearsPage"&&!yearSeries.length)refreshYears(false);if(b.dataset.page==="btcDominancePage"){if(btcDominanceCache)drawBtcDominance();else refreshBtcDominance(false);}if(b.dataset.page==="monthlyReturnsPage")applyMonthlyAsset(monthlyReturnsAsset(),false);if(b.dataset.page==="tradingPage"){startTradingSpotStream();if(tradingCache){drawTradingChart();refreshTradingSpot(true)}else refreshTrading()}if(b.dataset.page==="ethPage"){if(ethCache)drawEthChart();else refreshEth()}if(b.dataset.page==="ethBtcPage"){if(ethCache?.ethbtc?.length)drawEthBtcPage();else refreshEthBtcPage()}if(b.dataset.page==="participationScoresPage")refreshParticipationScores(false);if(b.dataset.page==="mvrvPage"&&!mvrvSeriesCache)refreshMvrvHistory();if(b.dataset.page==="profitLossPage"){if(profitLossCache)drawProfitLoss();else refreshProfitLoss()}if(b.dataset.page==="cycleBottomRoiPage")drawCycleBottomRoi()}));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>{recordPageUsage(b.dataset.page);document.querySelectorAll(".nav-btn").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===b.dataset.page));localStorage.setItem("btc-page",b.dataset.page);if(["riskPage","dcaPage","priceMetricsPage","totalMarketCapPage","onchainMetricsPage","cycleMetricsPage","socialMetricsPage"].includes(b.dataset.page))renderDca();if(b.dataset.page==="riskPage"){startTradingSpotStream();refreshTradingSpot(false)}if(b.dataset.page==="riskControlPage"){renderCalibrationHistory();renderCalibrationSummary(calibrationInputs(),calibrationResults[0])}if(b.dataset.page==="cowenHistoricalPage")drawCowenHistoricalPage();if(b.dataset.page==="fearGreedPage")renderFearGreed();if(b.dataset.page==="bottomPage")renderBottom();if(b.dataset.page==="volatilityPage")renderVolatility();if(b.dataset.page==="optionsVolatilityPage")window.refreshOptionsVolatility?.(false);if(b.dataset.page==="momentumPage")drawMomentumChart();if(b.dataset.page==="yearsPage"&&!yearSeries.length)refreshYears(false);if(b.dataset.page==="btcDominancePage"){if(btcDominanceCache)drawBtcDominance();else refreshBtcDominance(false);}if(b.dataset.page==="monthlyReturnsPage")applyMonthlyAsset(monthlyReturnsAsset(),false);if(b.dataset.page==="tradingPage"){startTradingSpotStream();if(tradingCache){drawTradingChart();refreshTradingSpot(true)}else refreshTrading()}if(b.dataset.page==="ethPage"){if(ethCache)drawEthChart();else refreshEth()}if(b.dataset.page==="ethBtcPage"){if(ethCache?.ethbtc?.length)drawEthBtcPage();else refreshEthBtcPage()}if(b.dataset.page==="participationScoresPage")refreshParticipationScores(false);if(b.dataset.page==="mvrvPage"&&!mvrvSeriesCache)refreshMvrvHistory();if(b.dataset.page==="profitLossPage"){if(profitLossCache)drawProfitLoss();else refreshProfitLoss()}if(b.dataset.page==="cycleBottomRoiPage")drawCycleBottomRoi()}));
 
   let cycleBottomRoiMaxDays=1400;
   function cycleBottomRoiVisibleNames(){
@@ -5021,6 +5088,106 @@ async function refreshMvrv(){
       localStorage.setItem(key,"1");
     }
   }catch(e){}
+})();
+</script>
+
+
+<script id="v146-options-volatility-js">
+(function(){
+  const API="https://rest-v1.volmex.finance/v2/history";
+  const CACHE_KEY="btc-bviv-history-v146";
+  const DAY=86400000;
+  let rows=[],range="3y",hoverRows=[],hoverX=null,refreshTimer=null;
+  const $=id=>document.getElementById(id);
+  const svgEl=(name,attrs={})=>{const e=document.createElementNS("http://www.w3.org/2000/svg",name);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));return e};
+  const fmtDate=ms=>new Date(ms).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});
+  const fmtPct=v=>Number.isFinite(v)?v.toLocaleString("fr-FR",{minimumFractionDigits:1,maximumFractionDigits:1})+" %":"—";
+
+  function parsePayload(j){
+    const out=[];
+    if(Array.isArray(j?.t)&&Array.isArray(j?.c)){
+      for(let i=0;i<Math.min(j.t.length,j.c.length);i++){const ms=Number(j.t[i])*1000,value=Number(j.c[i]);if(Number.isFinite(ms)&&Number.isFinite(value)&&value>0)out.push({ms,value});}
+    }else if(Array.isArray(j?.data)){
+      for(const r of j.data){const ms=Number(r?.t??r?.time??r?.timestamp);const value=Number(r?.c??r?.close??r?.p??r?.value);const t=ms>1e12?ms:ms*1000;if(Number.isFinite(t)&&Number.isFinite(value)&&value>0)out.push({ms:t,value});}
+    }else if(Array.isArray(j)){
+      for(const r of j){const ms=Number(r?.t??r?.time??r?.timestamp??r?.[0]);const value=Number(r?.c??r?.close??r?.p??r?.value??r?.[1]);const t=ms>1e12?ms:ms*1000;if(Number.isFinite(t)&&Number.isFinite(value)&&value>0)out.push({ms:t,value});}
+    }
+    return out.sort((a,b)=>a.ms-b.ms).filter((r,i,a)=>!i||r.ms!==a[i-1].ms);
+  }
+
+  function cacheSave(data){try{localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),rows:data}))}catch(e){}}
+  function cacheLoad(){try{const c=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");return Array.isArray(c?.rows)?c:null}catch(e){return null}}
+
+  async function fetchHistory(){
+    const to=Math.floor(Date.now()/1000),from=Math.floor(Date.UTC(2020,0,1)/1000);
+    const url=`${API}?symbol=BVIV&resolution=D&from=${from}&to=${to}`;
+    const c=new AbortController(),timer=setTimeout(()=>c.abort(),14000);
+    try{const r=await fetch(url,{cache:"no-store",signal:c.signal});if(!r.ok)throw new Error("HTTP "+r.status);const j=await r.json(),data=parsePayload(j);if(data.length<30)throw new Error("Historique BVIV insuffisant");return data}finally{clearTimeout(timer)}
+  }
+
+  function percentile(data,x){const v=data.map(r=>r.value).filter(Number.isFinite).sort((a,b)=>a-b);if(!v.length)return NaN;let n=0;for(const a of v){if(a<=x)n++;else break}return n/v.length*100}
+  function nearestBefore(ms){for(let i=rows.length-1;i>=0;i--)if(rows[i].ms<=ms)return rows[i];return null}
+  function realizedVolSeries(){
+    let src=[];
+    try{if(typeof newBitcoinRiskHistory==="function")src=newBitcoinRiskHistory().map(r=>({ms:Date.parse(String(r.date).slice(0,10)+"T12:00:00Z"),price:Number(r.price??r.close)}))}catch(e){}
+    if(src.length<50&&Array.isArray(window.bitcoinDailyHistory))src=window.bitcoinDailyHistory.map(r=>({ms:Date.parse(String(r.date??r[0]).slice(0,10)+"T12:00:00Z"),price:Number(r.close??r.price??r[4]??r[1])}));
+    src=src.filter(r=>Number.isFinite(r.ms)&&Number.isFinite(r.price)&&r.price>0).sort((a,b)=>a.ms-b.ms);
+    const ret=[];for(let i=1;i<src.length;i++)ret.push({ms:src[i].ms,r:Math.log(src[i].price/src[i-1].price)});
+    const out=[];for(let i=29;i<ret.length;i++){const a=ret.slice(i-29,i+1).map(x=>x.r),m=a.reduce((s,x)=>s+x,0)/a.length,sd=Math.sqrt(a.reduce((s,x)=>s+(x-m)*(x-m),0)/a.length);out.push({ms:ret[i].ms,value:sd*Math.sqrt(365)*100})}return out;
+  }
+
+  function visible(){if(range==="all"||!rows.length)return rows;const years=range==="5y"?5:range==="3y"?3:1,cut=rows.at(-1).ms-years*365.25*DAY;return rows.filter(r=>r.ms>=cut)}
+
+  function updateKpis(){
+    const last=rows.at(-1);if(!last)return;
+    const p7=nearestBefore(last.ms-7*DAY),year=rows.filter(r=>r.ms>=last.ms-365*DAY),vals=year.map(r=>r.value),min=Math.min(...vals),max=Math.max(...vals),pct=percentile(rows,last.value),delta=p7?last.value-p7.value:NaN;
+    $("ovCurrent").textContent=fmtPct(last.value);$("ovCurrentDate").textContent="Observation du "+fmtDate(last.ms);
+    $("ovChange7").textContent=Number.isFinite(delta)?(delta>=0?"+":"")+delta.toLocaleString("fr-FR",{minimumFractionDigits:1,maximumFractionDigits:1})+" pts":"—";
+    $("ovPercentile").textContent=Number.isFinite(pct)?pct.toLocaleString("fr-FR",{maximumFractionDigits:0})+"e":"—";
+    $("ovYearRange").textContent=Number.isFinite(min)&&Number.isFinite(max)?min.toFixed(1)+" → "+max.toFixed(1)+" %":"—";
+    const text=last.value<=40?"Volatilité implicite comprimée. Cela peut accompagner une consolidation, mais une expansion future peut se produire dans les deux directions.":last.value>=75?"Volatilité implicite élevée : le marché paie cher l’assurance et anticipe des mouvements importants.":"Volatilité implicite intermédiaire : à combiner avec le Bitcoin Risk, le cycle et le skew des options.";
+    $("ovInterpretation").textContent=text;
+  }
+
+  function draw(){
+    const svg=$("ovChart");if(!svg||!rows.length)return;svg.replaceChildren();
+    const data=visible();if(data.length<2)return;hoverRows=data;
+    const showRealized=$("ovShowRealized")?.checked===true,realizedAll=showRealized?realizedVolSeries():[],realized=realizedAll.filter(r=>r.ms>=data[0].ms&&r.ms<=data.at(-1).ms);
+    const W=1200,H=500,L=68,R=58,T=28,B=48,minMs=data[0].ms,maxMs=data.at(-1).ms,allVals=data.map(r=>r.value).concat(realized.map(r=>r.value),[35.59,90]),rawMin=Math.min(...allVals),rawMax=Math.max(...allVals),pad=Math.max(4,(rawMax-rawMin)*.08),minV=Math.max(0,rawMin-pad),maxV=rawMax+pad,x=ms=>L+(ms-minMs)/Math.max(1,maxMs-minMs)*(W-L-R),y=v=>T+(maxV-v)/Math.max(.001,maxV-minV)*(H-T-B);
+    for(let i=0;i<=5;i++){const v=minV+(maxV-minV)*i/5,yy=y(v);svg.append(svgEl("line",{x1:L,y1:yy,x2:W-R,y2:yy,stroke:"#263b52","stroke-width":1,opacity:.7}));const tx=svgEl("text",{x:L-9,y:yy+4,"text-anchor":"end",fill:"#9bb0c5","font-size":11});tx.textContent=v.toFixed(0)+"%";svg.append(tx)}
+    const sy=new Date(minMs).getUTCFullYear(),ey=new Date(maxMs).getUTCFullYear(),step=ey-sy>7?2:1;for(let yr=sy;yr<=ey;yr+=step){const ms=Date.UTC(yr,0,1,12);if(ms<minMs||ms>maxMs)continue;const xx=x(ms);svg.append(svgEl("line",{x1:xx,y1:T,x2:xx,y2:H-B,stroke:"#1c2b3c","stroke-width":1,opacity:.35}));const tx=svgEl("text",{x:xx,y:H-18,"text-anchor":"middle",fill:"#9bb0c5","font-size":11});tx.textContent=yr;svg.append(tx)}
+    [{v:35.59,label:"35,59 % · août 2026"},{v:90,label:"90 % · fév. 2026"}].forEach(ref=>{if(ref.v<minV||ref.v>maxV)return;const yy=y(ref.v);svg.append(svgEl("line",{x1:L,y1:yy,x2:W-R,y2:yy,stroke:"#f3b75c","stroke-width":1.2,"stroke-dasharray":"7 6",opacity:.8}));const tx=svgEl("text",{x:W-R-4,y:yy-6,"text-anchor":"end",fill:"#f3b75c","font-size":11});tx.textContent=ref.label;svg.append(tx)});
+    const path=d=>"M "+d.map(r=>`${x(r.ms).toFixed(1)} ${y(r.value).toFixed(1)}`).join(" L ");
+    if(realized.length>2)svg.append(svgEl("path",{d:path(realized),fill:"none",stroke:"#7e90a3","stroke-width":1.6,"stroke-dasharray":"5 5",opacity:.85,"vector-effect":"non-scaling-stroke"}));
+    svg.append(svgEl("path",{d:path(data),fill:"none",stroke:"#f7931a","stroke-width":2.8,"vector-effect":"non-scaling-stroke"}));
+    const last=data.at(-1);svg.append(svgEl("circle",{cx:x(last.ms),cy:y(last.value),r:4.5,fill:"#f7931a",stroke:"#071421","stroke-width":2}));
+    const overlay=svgEl("rect",{x:L,y:T,width:W-L-R,height:H-T-B,fill:"transparent",style:"cursor:crosshair"});svg.append(overlay);
+    const cross=svgEl("line",{x1:L,y1:T,x2:L,y2:H-B,stroke:"#d7e4f1","stroke-width":1,opacity:0,"stroke-dasharray":"3 4"});svg.append(cross);
+    const dot=svgEl("circle",{cx:L,cy:T,r:5,fill:"#f7931a",stroke:"#071421","stroke-width":2,opacity:0});svg.append(dot);
+    const tip=$("ovTooltip"),wrap=$("ovChartWrap");
+    function hide(){cross.setAttribute("opacity",0);dot.setAttribute("opacity",0);if(tip)tip.style.display="none"}
+    overlay.addEventListener("pointerleave",hide);overlay.addEventListener("pointermove",ev=>{const box=svg.getBoundingClientRect(),px=(ev.clientX-box.left)/Math.max(1,box.width)*W,target=minMs+(px-L)/(W-L-R)*(maxMs-minMs);let lo=0,hi=data.length-1;while(lo<hi){const m=(lo+hi)>>1;if(data[m].ms<target)lo=m+1;else hi=m}const a=data[Math.max(0,lo-1)],b=data[lo],r=!a?b:!b?a:Math.abs(a.ms-target)<=Math.abs(b.ms-target)?a:b,xx=x(r.ms),yy=y(r.value);cross.setAttribute("x1",xx);cross.setAttribute("x2",xx);cross.setAttribute("opacity",.65);dot.setAttribute("cx",xx);dot.setAttribute("cy",yy);dot.setAttribute("opacity",1);if(tip&&wrap){tip.innerHTML=`<b>${fmtDate(r.ms)}</b><br>BVIV : <b>${r.value.toFixed(2)} %</b>`;tip.style.display="block";const wb=wrap.getBoundingClientRect(),left=Math.min(wb.width-175,Math.max(8,ev.clientX-wb.left+12)),top=Math.max(8,ev.clientY-wb.top-62);tip.style.left=left+"px";tip.style.top=top+"px"}});
+  }
+
+  function setStatus(text,live=false){if($("ovStatus"))$("ovStatus").textContent=text;if($("ovLiveDot"))$("ovLiveDot").classList.toggle("live",live)}
+
+  async function refresh(showToast=true){
+    const btn=$("refreshOptionsVolatility");if(btn){btn.disabled=true;btn.textContent="Actualisation…"}setStatus("Mise à jour Volmex…",false);
+    try{rows=await fetchHistory();cacheSave(rows);updateKpis();draw();setStatus(`Volmex · direct · ${rows.length.toLocaleString("fr-FR")} observations · ${fmtDate(rows.at(-1).ms)}`,true);if(showToast&&typeof toast==="function")toast("BVIV actualisé")}
+    catch(e){const c=cacheLoad();if(c?.rows?.length){rows=c.rows;updateKpis();draw();setStatus(`Volmex indisponible · cache local du ${new Date(c.savedAt).toLocaleString("fr-FR")}`,false);if(showToast&&typeof toast==="function")toast("BVIV : dernière donnée conservée utilisée")}else{setStatus("BVIV indisponible. L’API publique Volmex peut être temporairement bloquée ou limitée.",false)}}
+    finally{if(btn){btn.disabled=false;btn.textContent="↻ Actualiser BVIV"}}
+  }
+  window.refreshOptionsVolatility=refresh;
+
+  function bind(){
+    $("refreshOptionsVolatility")?.addEventListener("click",()=>refresh(true));
+    document.querySelectorAll("[data-ov-range]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-ov-range]").forEach(x=>x.classList.toggle("active",x===b));range=b.dataset.ovRange||"3y";draw()}));
+    $("ovShowRealized")?.addEventListener("change",draw);
+    const c=cacheLoad();if(c?.rows?.length){rows=c.rows;updateKpis();draw();setStatus(`Cache local · ${fmtDate(rows.at(-1).ms)} · actualisation en cours…`,false)}
+    refresh(false);
+    refreshTimer=setInterval(()=>{if(!document.hidden)refresh(false)},30*60*1000);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
 </script>
 
