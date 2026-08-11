@@ -309,8 +309,8 @@
 </style>
 
 
-<style id="v146-options-volatility-style">
-/* v146 · BVIV / options volatility */
+<style id="v147-options-volatility-style">
+/* v147 · BVIV / options volatility */
 #optionsVolatilityPage .ov-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
 #optionsVolatilityPage .ov-kpi{padding:14px;border:1px solid #29405a;border-radius:13px;background:#081523}
 #optionsVolatilityPage .ov-kpi .value{font-size:25px}
@@ -335,7 +335,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v146</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v147</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -515,9 +515,9 @@
     <section class="panel" style="margin-top:12px">
       <div class="panel-head"><div><h2>Bitcoin ETF Flows · US Spot ETFs</h2><div class="sub">Flux nets quotidiens en millions de dollars · comparaison avec le prix BTC</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="status-pill" id="etfDataStatus">Chargement…</span><button class="btn primary" id="refreshEtfFlows" type="button">↻ Actualiser</button></div></div>
       <div class="market-toolbar" id="etfRangeControls">
-        <label class="market-toggle"><input type="radio" name="etfRange" value="90" checked>90 jours</label>
+        <label class="market-toggle"><input type="radio" name="etfRange" value="90">90 jours</label>
         <label class="market-toggle"><input type="radio" name="etfRange" value="365">1 an</label>
-        <label class="market-toggle"><input type="radio" name="etfRange" value="all">Depuis 2024</label>
+        <label class="market-toggle"><input type="radio" name="etfRange" value="all" checked>Depuis 2024</label>
         <label class="market-toggle"><input type="checkbox" id="etfShowBtc" checked>Prix BTC</label>
         <label class="market-toggle"><input type="checkbox" id="etfShowMa7" checked>Moyenne 7 séances</label>
         <label class="market-toggle"><input type="checkbox" id="etfShowMa30">Moyenne 30 séances</label>
@@ -4030,14 +4030,14 @@ async function refreshMvrv(){
   function dparse(s){const m=s.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);if(!m)return NaN;const mon={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11}[m[2]];return Date.UTC(+m[3],mon,+m[1],12)}
   function num(s){s=String(s??'').trim().replace(/,/g,'');if(!s||s==='-'||s==='–')return 0;const neg=/^\(.*\)$/.test(s);s=s.replace(/[()]/g,'');const v=Number(s);return Number.isFinite(v)?(neg?-v:v):0}
   function parseLines(raw){const rows=[];String(raw).split(/\r?\n/).forEach(line=>{line=line.replace(/^L\d+:\s*/,'').trim();if(!/^\d{1,2}\s+[A-Z][a-z]{2}\s+20\d{2}\s*\|/.test(line))return;const p=line.split('|').map(x=>x.trim());if(p.length<14)return;const ms=dparse(p[0]);if(!Number.isFinite(ms))return;const o={date:p[0],ms};ETFS.forEach((k,i)=>o[k]=num(p[i+1]));o.Total=num(p[13]);rows.push(o)});return rows.sort((a,b)=>a.ms-b.ms)}
-  async function fetchLive(){const urls=['https://r.jina.ai/https://farside.co.uk/bitcoin-etf-flow-all-data/','https://r.jina.ai/http://farside.co.uk/bitcoin-etf-flow-all-data/'];for(const u of urls){try{const r=await fetch(u,{cache:'no-store'});if(!r.ok)continue;const t=await r.text(),rows=parseLines(t);if(rows.length>400)return rows}catch(e){}}throw new Error('Flux Farside indisponible')}
+  async function fetchLive(){const urls=['https://r.jina.ai/https://farside.co.uk/bitcoin-etf-flow-all-data/','https://r.jina.ai/http://farside.co.uk/bitcoin-etf-flow-all-data/','https://r.jina.ai/https://farside.co.uk/btc/'];for(const u of urls){try{const r=await fetch(u,{cache:'no-store'});if(!r.ok)continue;const t=await r.text(),rows=parseLines(t);if(rows.length>100)return rows}catch(e){}}throw new Error('Flux Farside indisponible')}
   function fmt(v,dec=0){if(!Number.isFinite(v))return '—';const sign=v>0?'+':'';return sign+v.toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' M$'}
   function klass(el,v){if(!el)return;el.classList.remove('positive','negative','neutral');el.classList.add(v>0?'positive':v<0?'negative':'neutral')}
   function windowRows(days){if(!etfRows.length)return[];const end=etfRows.at(-1).ms,start=end-days*86400000;return etfRows.filter(r=>r.ms>=start)}
   function sum(rows,key='Total'){return rows.reduce((a,r)=>a+(Number(r[key])||0),0)}
   function avgLast(n,key='Total'){const a=etfRows.slice(-n);return a.length?sum(a,key)/a.length:NaN}
   function rolling(rows,n,key='Total'){return rows.map((r,i)=>({ms:r.ms,value:i+1<n?NaN:rows.slice(i-n+1,i+1).reduce((a,x)=>a+x[key],0)/n}))}
-  function rangeData(){const v=document.querySelector('input[name="etfRange"]:checked')?.value||'90';if(v==='all')return etfRows;const d=+v,end=etfRows.at(-1)?.ms||0;return etfRows.filter(r=>r.ms>=end-d*86400000)}
+  function rangeData(){const v=document.querySelector('input[name="etfRange"]:checked')?.value||'all';if(v==='all')return etfRows;const d=+v,end=etfRows.at(-1)?.ms||0;return etfRows.filter(r=>r.ms>=end-d*86400000)}
   function flowSignal(v30,v90){if(v30>1000&&v90>0)return['Accumulation','Demande ETF nettement positive sur 30 jours et confirmée sur 90 jours.'];if(v30<-1000&&v90<0)return['Distribution','Rachats nets importants sur 30 jours, confirmés par la tendance 90 jours.'];if(v30>300)return['Accumulation modérée','Les ETF redeviennent un acheteur marginal net, mais sans impulsion extrême.'];if(v30<-300)return['Distribution modérée','Les ETF restent un vendeur marginal net à court terme.'];return['Neutre','Les flux récents sont proches de l’équilibre : pas de demande marginale ETF dominante.']}
   function renderKpis(){if(!etfRows.length)return;const latest=etfRows.at(-1),s7=sum(windowRows(7)),s30=sum(windowRows(30)),s90=sum(windowRows(90)),sig=flowSignal(s30,s90);$e('etfLatestFlow').textContent=fmt(latest.Total,1);klass($e('etfLatestFlow'),latest.Total);$e('etfLatestDate').textContent=new Date(latest.ms).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});[['etfFlow7',s7],['etfFlow30',s30],['etfFlow90',s90]].forEach(([id,v])=>{$e(id).textContent=fmt(v,0);klass($e(id),v)});$e('etfSignal').textContent=sig[0];klass($e('etfSignal'),s30);$e('etfSignalSub').textContent=sig[1];const ma7=avgLast(7),ma30=avgLast(30);$e('etfMa7Value').textContent=fmt(ma7,1)+'/séance';klass($e('etfMa7Value'),ma7);$e('etfMa30Value').textContent=fmt(ma30,1)+'/séance';klass($e('etfMa30Value'),ma30);const r30=windowRows(30),i30=sum(r30,'IBIT'),f30=sum(r30,'FBTC'),g30=sum(r30,'GBTC');[['etfIbit30',i30],['etfFbtc30',f30],['etfGbtc30',g30]].forEach(([id,v])=>{$e(id).textContent=fmt(v,0);klass($e(id),v)});$e('etfCowenBadge').textContent=sig[0];$e('etfInterpretation').textContent=`${sig[1]} Sur 30 jours : ${fmt(s30,0)}, contre ${fmt(s90,0)} sur 90 jours. La moyenne des 7 dernières séances est de ${fmt(ma7,1)} par séance et celle des 30 dernières de ${fmt(ma30,1)}. Dans une lecture de cycle façon Cowen, une amélioration durable des flux ETF soutient la liquidité et la participation, mais ne remplace pas les signaux de prix, de risk et de cycle.`}
   function drawFlow(){const svg=$e('etfFlowChart');if(!svg||!etfRows.length)return;const rows=rangeData(),W=1100,H=500,L=74,R=82,T=28,B=54;const vals=rows.map(r=>r.Total),ma7=rolling(rows,7),ma30=rolling(rows,30);let max=Math.max(100,...vals.map(Math.abs));max*=1.15;const x=(i)=>L+i/Math.max(1,rows.length-1)*(W-L-R), y=v=>T+(max-v)/(2*max)*(H-T-B), y0=y(0);let btc=btcRows.filter(b=>b.ms>=rows[0].ms&&b.ms<=rows.at(-1).ms),bmin=Math.min(...btc.map(b=>b.value)),bmax=Math.max(...btc.map(b=>b.value));const yb=v=>T+(bmax-v)/Math.max(1,bmax-bmin)*(H-T-B);let s=`<rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="rgba(5,14,24,.28)"/><line x1="${L}" y1="${y0}" x2="${W-R}" y2="${y0}" stroke="#8291a6" stroke-width="1"/>`;for(let k=-2;k<=2;k++){const v=max*k/2,yy=y(v);s+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="rgba(130,145,166,.16)"/><text x="${L-8}" y="${yy+4}" text-anchor="end" fill="#9eb0c2" font-size="11">${Math.round(v)}M</text>`}const bw=Math.max(1,Math.min(8,(W-L-R)/rows.length*.72));rows.forEach((r,i)=>{const yy=y(r.Total),h=Math.abs(yy-y0);s+=`<rect data-etf-i="${i}" x="${x(i)-bw/2}" y="${Math.min(yy,y0)}" width="${bw}" height="${Math.max(1,h)}" fill="${r.Total>=0?'#39d98a':'#ff647c'}" opacity=".82"/>`});function path(series,color,w,dash=''){const pts=series.map((p,i)=>Number.isFinite(p.value)?[x(i),y(p.value)]:null).filter(Boolean);if(pts.length<2)return'';return `<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${color}" stroke-width="${w}" ${dash?`stroke-dasharray="${dash}"`:''}/>`}if($e('etfShowMa7')?.checked)s+=path(ma7,'#f6c85f',2.2);if($e('etfShowMa30')?.checked)s+=path(ma30,'#a78bfa',2.2);if($e('etfShowBtc')?.checked&&btc.length>1){const pts=btc.map(b=>[L+(b.ms-rows[0].ms)/(rows.at(-1).ms-rows[0].ms)*(W-L-R),yb(b.value)]);s+=`<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="#54a7ff" stroke-width="2" opacity=".9"/>`;s+=`<text x="${W-R+8}" y="${T+12}" fill="#54a7ff" font-size="11">BTC ${Math.round(bmax/1000)}k</text><text x="${W-R+8}" y="${H-B}" fill="#54a7ff" font-size="11">${Math.round(bmin/1000)}k</text>`}const ticks=6;for(let j=0;j<ticks;j++){const i=Math.round(j*(rows.length-1)/(ticks-1)),r=rows[i];s+=`<text x="${x(i)}" y="${H-20}" text-anchor="middle" fill="#9eb0c2" font-size="11">${new Date(r.ms).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</text>`}svg.innerHTML=s;svg.onmousemove=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse()),i=Math.max(0,Math.min(rows.length-1,Math.round((p.x-L)/(W-L-R)*(rows.length-1)))),r=rows[i];$e('etfFlowTooltip').innerHTML=`<b>${new Date(r.ms).toLocaleDateString('fr-FR')}</b> · Total ${fmt(r.Total,1)} · IBIT ${fmt(r.IBIT,1)} · FBTC ${fmt(r.FBTC,1)} · GBTC ${fmt(r.GBTC,1)}`};}
@@ -5092,10 +5092,10 @@ async function refreshMvrv(){
 </script>
 
 
-<script id="v146-options-volatility-js">
+<script id="v147-options-volatility-js">
 (function(){
   const API="https://rest-v1.volmex.finance/v2/history";
-  const CACHE_KEY="btc-bviv-history-v146";
+  const CACHE_KEY="btc-bviv-history-v147";
   const DAY=86400000;
   let rows=[],range="3y",hoverRows=[],hoverX=null,refreshTimer=null;
   const $=id=>document.getElementById(id);
