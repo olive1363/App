@@ -309,8 +309,8 @@
 </style>
 
 
-<style id="v148-options-volatility-style">
-/* v148 · BVIV / options volatility */
+<style id="v149-options-volatility-style">
+/* v149 · BVIV / options volatility */
 #optionsVolatilityPage .ov-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
 #optionsVolatilityPage .ov-kpi{padding:14px;border:1px solid #29405a;border-radius:13px;background:#081523}
 #optionsVolatilityPage .ov-kpi .value{font-size:25px}
@@ -335,7 +335,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v148</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v149</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -554,7 +554,7 @@
     <section class="panel" style="margin-top:12px">
       <div class="panel-head"><div><h2>Dernières séances</h2><div class="sub">Détail Farside · US$m</div></div><span class="status-pill">IBIT · FBTC · GBTC · Total</span></div>
       <div class="return-table-wrap"><table class="return-table"><thead><tr><th>Date</th><th>IBIT</th><th>FBTC</th><th>GBTC</th><th>Total</th></tr></thead><tbody id="etfRecentBody"><tr><td colspan="5">Chargement…</td></tr></tbody></table></div>
-      <p class="note">Source principale : Farside Investors. La page tente une mise à jour en ligne à l’ouverture. En cas de blocage réseau/CORS, elle utilise un secours intégré daté du 07/08/2026 et l’indique explicitement.</p>
+      <p class="note">Source principale : Farside Investors. La page tente une mise à jour en ligne à l’ouverture. En cas de blocage réseau/CORS, elle utilise un secours intégré daté du 07/08/2026. Le parseur accepte maintenant à la fois le HTML Farside et le format texte/Markdown des proxys CORS et l’indique explicitement.</p>
     </section>
   </div>
 
@@ -4029,29 +4029,45 @@ async function refreshMvrv(){
   const $e=id=>document.getElementById(id);
   function dparse(s){const m=s.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);if(!m)return NaN;const mon={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11}[m[2]];return Date.UTC(+m[3],mon,+m[1],12)}
   function num(s){s=String(s??'').trim().replace(/,/g,'');if(!s||s==='-'||s==='–')return 0;const neg=/^\(.*\)$/.test(s);s=s.replace(/[()]/g,'');const v=Number(s);return Number.isFinite(v)?(neg?-v:v):0}
-  function parseLines(raw){const rows=[];String(raw).split(/\r?\n/).forEach(line=>{line=line.replace(/^L\d+:\s*/,'').trim();if(!/^\d{1,2}\s+[A-Z][a-z]{2}\s+20\d{2}\s*\|/.test(line))return;const p=line.split('|').map(x=>x.trim());if(p.length<14)return;const ms=dparse(p[0]);if(!Number.isFinite(ms))return;const o={date:p[0],ms};ETFS.forEach((k,i)=>o[k]=num(p[i+1]));o.Total=num(p[13]);rows.push(o)});return rows.sort((a,b)=>a.ms-b.ms)}
+  function parseLines(raw){const rows=[];String(raw).split(/\r?\n/).forEach(line=>{line=line.replace(/^L\d+:\s*/,'').trim();line=line.replace(/^\|\s*/,'');if(!/^\d{1,2}\s+[A-Z][a-z]{2}\s+20\d{2}\s*\|/.test(line))return;const p=line.split('|').map(x=>x.trim()).filter((x,i,a)=>!(i===a.length-1&&x===''));if(p.length<14)return;const ms=dparse(p[0]);if(!Number.isFinite(ms))return;const o={date:p[0],ms};ETFS.forEach((k,i)=>o[k]=num(p[i+1]));o.Total=num(p[13]);rows.push(o)});return dedupeRows(rows)}
+  function dedupeRows(rows){const m=new Map();(rows||[]).forEach(r=>{if(Number.isFinite(r?.ms))m.set(r.ms,r)});return [...m.values()].sort((a,b)=>a.ms-b.ms)}
+  function parseFarsideHtml(raw){
+    try{
+      const doc=new DOMParser().parseFromString(String(raw),'text/html'),rows=[];
+      doc.querySelectorAll('tr').forEach(tr=>{
+        const cells=[...tr.querySelectorAll('th,td')].map(td=>td.textContent.replace(/\u00a0/g,' ').trim());
+        if(cells.length<14)return;
+        const date=cells[0].replace(/\s+/g,' ').trim(),ms=dparse(date);
+        if(!Number.isFinite(ms))return;
+        const o={date,ms};ETFS.forEach((k,i)=>o[k]=num(cells[i+1]));o.Total=num(cells[13]);rows.push(o);
+      });
+      return dedupeRows(rows);
+    }catch(e){return[]}
+  }
+  function parseFarsidePayload(raw){
+    const a=parseLines(raw),b=parseFarsideHtml(raw);
+    return a.length>=b.length?a:b;
+  }
   async function fetchLive(){
     const target='https://farside.co.uk/bitcoin-etf-flow-all-data/';
     const urls=[
-      target,
-      'https://r.jina.ai/https://farside.co.uk/bitcoin-etf-flow-all-data/',
-      'https://api.allorigins.win/raw?url='+encodeURIComponent(target),
-      'https://corsproxy.io/?url='+encodeURIComponent(target),
-      'https://r.jina.ai/http://farside.co.uk/bitcoin-etf-flow-all-data/'
+      ['Farside direct',target],
+      ['AllOrigins', 'https://api.allorigins.win/raw?url='+encodeURIComponent(target)],
+      ['CorsProxy', 'https://corsproxy.io/?url='+encodeURIComponent(target)],
+      ['Jina', 'https://r.jina.ai/https://farside.co.uk/bitcoin-etf-flow-all-data/'],
+      ['Jina HTTP', 'https://r.jina.ai/http://farside.co.uk/bitcoin-etf-flow-all-data/']
     ];
-    let best=[];
-    for(const u of urls){
+    let best=[],bestSource='';
+    for(const [source,u] of urls){
       try{
         const r=await fetch(u,{cache:'no-store'});
         if(!r.ok)continue;
-        const t=await r.text();
-        let rows=parseLines(t);
-        if(rows.length>best.length)best=rows;
-        // Une vraie vue historique doit remonter au lancement des ETF spot US en janvier 2024.
-        if(rows.length>250 && rows[0]?.ms<=Date.UTC(2024,0,20,12)) return rows;
+        const t=await r.text(),rows=parseFarsidePayload(t);
+        if(rows.length>best.length){best=rows;bestSource=source}
+        if(rows.length>250 && rows[0]?.ms<=Date.UTC(2024,0,20,12)) return {rows,source};
       }catch(e){}
     }
-    if(best.length>100)return best;
+    if(best.length>100)return {rows:best,source:bestSource||'Web'};
     throw new Error('Flux Farside indisponible');
   }
   function fmt(v,dec=0){if(!Number.isFinite(v))return '—';const sign=v>0?'+':'';return sign+v.toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' M$'}
@@ -4072,12 +4088,13 @@ async function refreshMvrv(){
     if(st)st.textContent='Mise à jour Farside…';
     let live=true;
     try{
-      etfRows=await fetchLive();
-      try{localStorage.setItem('btc-etf-farside-v148',JSON.stringify({savedAt:Date.now(),rows:etfRows}))}catch(e){}
+      const liveResult=await fetchLive();
+      etfRows=liveResult.rows; live=liveResult.source||true;
+      try{localStorage.setItem('btc-etf-farside-v149',JSON.stringify({savedAt:Date.now(),rows:etfRows,source:live}))}catch(e){}
     }catch(e){
       live=false;
       try{
-        const keys=['btc-etf-farside-v148','btc-etf-farside-v145'];
+        const keys=['btc-etf-farside-v149','btc-etf-farside-v148','btc-etf-farside-v145'];
         let cached=null;
         for(const k of keys){
           const c=JSON.parse(localStorage.getItem(k)||'null');
@@ -4093,7 +4110,7 @@ async function refreshMvrv(){
       const d=etfRows.at(-1),first=etfRows[0];
       const full=first?.ms<=Date.UTC(2024,0,20,12);
       const span=full?'historique depuis janv. 2024':`historique limité à ${etfRows.length} séances`;
-      st.textContent=live===true?`Farside · direct · ${span} · maj ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${span} · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${span} · ${new Date(d.ms).toLocaleDateString('fr-FR')}`;
+      st.textContent=(live&&live!==true&&live!=='cache'&&live!==false)?`${live} · ${span} · maj ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live===true?`Farside · direct · ${span} · maj ${new Date(d.ms).toLocaleDateString('fr-FR')}`:live==='cache'?`Farside · cache local · ${span} · ${new Date(d.ms).toLocaleDateString('fr-FR')}`:`Secours intégré · ${span} · ${new Date(d.ms).toLocaleDateString('fr-FR')}`;
     }
   }
   function init(){if(!$e('etfFlowsPage'))return;$e('refreshEtfFlows')?.addEventListener('click',()=>refresh(true));document.querySelectorAll('input[name="etfRange"],#etfShowBtc,#etfShowMa7,#etfShowMa30,[data-etf-cum]').forEach(el=>el.addEventListener('change',()=>{drawFlow();drawCum()}));refresh(false)}
@@ -5143,10 +5160,10 @@ async function refreshMvrv(){
 </script>
 
 
-<script id="v148-options-volatility-js">
+<script id="v149-options-volatility-js">
 (function(){
   const API="https://rest-v1.volmex.finance/v2/history";
-  const CACHE_KEY="btc-bviv-history-v148";
+  const CACHE_KEY="btc-bviv-history-v149";
   const DAY=86400000;
   let rows=[],range="3y",hoverRows=[],hoverX=null,refreshTimer=null;
   const $=id=>document.getElementById(id);
