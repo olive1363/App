@@ -309,8 +309,8 @@
 </style>
 
 
-<style id="v150-options-volatility-style">
-/* v150 · BVIV / options volatility */
+<style id="v149-options-volatility-style">
+/* v149 · BVIV / options volatility */
 #optionsVolatilityPage .ov-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
 #optionsVolatilityPage .ov-kpi{padding:14px;border:1px solid #29405a;border-radius:13px;background:#081523}
 #optionsVolatilityPage .ov-kpi .value{font-size:25px}
@@ -335,7 +335,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v150</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v149</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -1413,9 +1413,7 @@
       <div class="year-legend" id="cycleBottomRoiLegend"></div>
       <div class="chart-wrap"><svg id="cycleBottomRoiChart" viewBox="0 0 1200 520" preserveAspectRatio="none"></svg><div class="chart-tooltip" id="cycleBottomRoiTooltip" hidden></div></div>
       <div class="year-summary" id="cycleBottomRoiDeviationSummary" style="margin-top:12px"></div>
-      <div class="reading" style="margin-top:14px"><h3>Comparatif de durée des cycles</h3><p class="sub">Nombre total de jours entre deux points bas successifs. Pour 2022 → 2026, le calcul utilise le bottom 2026 provisoire et se recale automatiquement si un nouveau plus bas apparaît.</p></div>
-      <div class="year-summary" id="cycleBottomDurationSummary" style="margin-top:10px"></div>
-      <div class="return-table-wrap" style="margin-top:10px"><table class="return-table"><thead><tr><th>Cycle</th><th>Du point bas</th><th>Au point bas suivant</th><th>Jours totaux</th><th>Écart vs précédent</th><th>Écart vs moyenne historique</th></tr></thead><tbody id="cycleBottomDurationBody"><tr><td colspan="6">Calcul…</td></tr></tbody></table></div>
+      <div class="reading" style="margin-top:14px"><h3>Durée entre les points bas &amp; prévision bottom 2026</h3><p class="sub">Comparaison calendaire indépendante du ROI. Les projections 2026 sont des repères statistiques, pas une date certaine.</p><div class="year-summary" id="cycleBottomDurationSummary" style="margin-top:10px"></div></div>
       <div id="cycleBottomRoiStatus" class="sub" style="margin-top:10px">Le graphique utilise le même historique BTC que la page BTC.</div>
     </section>
     <section class="panel"><h2>Comment lire ce graphique ?</h2><div class="reading"><p><b>1 = prix du point bas.</b> Une valeur de 10 signifie que Bitcoin vaut 10× le prix du creux du cycle. L’alignement par nombre de jours permet de comparer la vitesse de reprise des différents cycles sans être trompé par leurs dates calendaires.</p><p>Le graphique sert surtout à visualiser les <b>diminishing returns</b> : à durée comparable, les multiples atteints par les cycles récents ont historiquement tendance à être plus faibles. Ce n’est pas un outil de prédiction du prochain prix à lui seul.</p><p><b>Creux de référence :</b> 14/01/2015, 15/12/2018 et 21/11/2022. Le <b>cycle 2026</b> est également affiché avec un <b>bottom provisoire</b>, défini automatiquement comme la plus basse clôture BTC depuis le 1er janvier 2026. Si un nouveau plus bas apparaît, le point de départ et toute la courbe 2026 sont recalculés automatiquement. Les prix sont extraits du même historique BTC que la page BTC.</p></div></section>
@@ -3524,6 +3522,19 @@ async function refreshMvrv(){
     if(rows2026.length){const low2026=rows2026.reduce((best,r)=>r.value<best.value?r:best,rows2026[0]);defs.push({name:"Cycle 6 · 2026 provisoire",date:new Date(low2026.ms).toISOString().slice(0,10),color:"#21c7d9",provisional:true,baseOverride:low2026});}
     return defs.map(def=>{const target=Date.parse(def.date+"T00:00:00Z"),base=def.baseOverride||price.reduce((best,r)=>Math.abs(r.ms-target)<Math.abs(best.ms-target)?r:best,price[0]),rows=price.filter(r=>r.ms>=base.ms&&r.ms<=base.ms+cycleBottomRoiMaxDays*86400000).map(r=>({day:(r.ms-base.ms)/86400000,value:r.value/base.value,price:r.value,ms:r.ms}));return {...def,base,rows}}).filter(s=>s.rows.length>1);
   }
+  function renderCycleBottomDuration(series){
+    const box=$("cycleBottomDurationSummary");if(!box)return;
+    const day=86400000, bottoms=[{label:"2015 → 2018",a:"2015-01-14",b:"2018-12-15"},{label:"2018 → 2022",a:"2018-12-15",b:"2022-11-21"}].map(x=>({...x,days:Math.round((Date.parse(x.b+"T12:00:00Z")-Date.parse(x.a+"T12:00:00Z"))/day)}));
+    const mean=Math.round(bottoms.reduce((sum,x)=>sum+x.days,0)/bottoms.length), prev=bottoms.at(-1).days, base=Date.parse("2022-11-21T12:00:00Z");
+    const fmtDate=ms=>new Date(ms).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});
+    const projectedMean=base+mean*day, projectedPrev=base+prev*day;
+    const rootMs=estimateDate(Number.isFinite(state.block)?state.block:fallbackBlock(),TARGET);
+    const rootDays=Math.round((rootMs-base)/day);
+    const current=series.find(x=>x.provisional), currentDays=current?Math.round((current.base.ms-base)/day):NaN, currentDate=current?.base?.ms;
+    const delta=(v,ref)=>`${v-ref>=0?"+":""}${v-ref} j`;
+    box.innerHTML=`<div class="year-stat"><span class="label">2015 → 2018</span><b>${bottoms[0].days.toLocaleString("fr-FR")} j</b><span class="sub">14/01/2015 → 15/12/2018 · référence</span></div><div class="year-stat"><span class="label">2018 → 2022</span><b>${bottoms[1].days.toLocaleString("fr-FR")} j</b><span class="sub">Écart vs cycle précédent : ${delta(bottoms[1].days,bottoms[0].days)}</span></div><div class="year-stat"><span class="label">Moyenne historique</span><b>${mean.toLocaleString("fr-FR")} j</b><span class="sub">Moyenne des deux intervalles complets</span></div><div class="year-stat"><span class="label">Bottom 2026 · moyenne</span><b>${fmtDate(projectedMean)}</b><span class="sub">${mean.toLocaleString("fr-FR")} j après 2022 · ${delta(mean,prev)} vs 2018→2022</span></div><div class="year-stat"><span class="label">Bottom 2026 · répétition cycle précédent</span><b>${fmtDate(projectedPrev)}</b><span class="sub">${prev.toLocaleString("fr-FR")} j après 2022 · écart 0 j vs 2018→2022</span></div><div class="year-stat"><span class="label">Bottom 2026 · Rational Root / blocs</span><b>${fmtDate(rootMs)}</b><span class="sub">Bloc cible ${fmtInt(TARGET)} · ${rootDays.toLocaleString("fr-FR")} j après 2022 · ${delta(rootDays,prev)} vs 2018→2022</span></div>${Number.isFinite(currentDays)?`<div class="year-stat"><span class="label">Plus bas 2026 provisoire observé</span><b>${fmtDate(currentDate)}</b><span class="sub">${currentDays.toLocaleString("fr-FR")} j après 2022 · ${delta(currentDays,prev)} vs 2018→2022</span></div>`:""}`;
+  }
+
   function renderCycleBottomRoiSelector(series){
     const box=$("cycleBottomRoiSelector");if(!box)return;const visible=cycleBottomRoiVisibleNames();
     box.innerHTML=series.map(s=>`<label class="cycle-check"><input type="checkbox" data-bottom-roi-series="${s.name}" ${visible.includes(s.name)?"checked":""}><span>${s.name}${s.reference?" · référence Cowen":""}</span></label>`).join("");
@@ -3536,23 +3547,10 @@ async function refreshMvrv(){
     }
     return byDay;
   }
-  function renderCycleBottomDurationComparison(series){
-    const body=$("cycleBottomDurationBody"),summary=$("cycleBottomDurationSummary");if(!body||!summary||series.length<2)return;
-    const ordered=[...series].sort((a,b)=>a.base.ms-b.base.ms),rows=[];
-    for(let i=0;i<ordered.length-1;i++){
-      const a=ordered[i],b=ordered[i+1],days=Math.round((b.base.ms-a.base.ms)/86400000);
-      rows.push({name:a.name.replace(/ ·.*$/,""),from:a.base.ms,to:b.base.ms,days,provisional:!!b.provisional});
-    }
-    const completed=rows.filter(r=>!r.provisional),histAvg=completed.length?completed.reduce((sum,r)=>sum+r.days,0)/completed.length:NaN;
-    body.innerHTML=rows.map((r,i)=>{const prev=i?rows[i-1]:null,dPrev=prev?r.days-prev.days:NaN,dAvg=Number.isFinite(histAvg)?r.days-histAvg:NaN;return `<tr${r.provisional?' class="projected"':''}><td><b>${r.name}</b>${r.provisional?' <small>→ bottom 2026 provisoire</small>':''}</td><td>${new Date(r.from).toLocaleDateString("fr-FR")}</td><td>${new Date(r.to).toLocaleDateString("fr-FR")}</td><td><b>${r.days.toLocaleString("fr-FR")} j</b></td><td>${Number.isFinite(dPrev)?`${dPrev>=0?'+':''}${dPrev.toLocaleString("fr-FR")} j`:'—'}</td><td>${Number.isFinite(dAvg)?`${dAvg>=0?'+':''}${Math.round(dAvg).toLocaleString("fr-FR")} j`:'—'}</td></tr>`}).join("");
-    const latest=rows.at(-1),previous=rows.length>1?rows.at(-2):null,deltaPrev=latest&&previous?latest.days-previous.days:NaN,deltaAvg=latest&&Number.isFinite(histAvg)?latest.days-histAvg:NaN;
-    summary.innerHTML=`<div class="year-stat"><span class="label">Durée moyenne historique</span><b>${Number.isFinite(histAvg)?Math.round(histAvg).toLocaleString("fr-FR")+" j":"—"}</b><span class="sub">Moyenne des cycles complets 2015→2018 et 2018→2022</span></div><div class="year-stat"><span class="label">Cycle 2022 → 2026 provisoire</span><b style="color:#21c7d9">${latest?latest.days.toLocaleString("fr-FR")+" j":"—"}</b><span class="sub">Du bottom 2022 au bottom provisoire 2026</span></div><div class="year-stat"><span class="label">Différence vs cycle précédent</span><b>${Number.isFinite(deltaPrev)?`${deltaPrev>=0?'+':''}${deltaPrev.toLocaleString("fr-FR")} j`:'—'}</b><span class="sub">Positif = cycle plus long · négatif = plus court</span></div><div class="year-stat"><span class="label">Différence vs moyenne</span><b>${Number.isFinite(deltaAvg)?`${deltaAvg>=0?'+':''}${Math.round(deltaAvg).toLocaleString("fr-FR")} j`:'—'}</b><span class="sub">Écart au nombre moyen de jours des cycles complets</span></div>`;
-  }
-
   function drawCycleBottomRoi(){
     const svg=$("cycleBottomRoiChart"),status=$("cycleBottomRoiStatus"),summary=$("cycleBottomRoiDeviationSummary"),legend=$("cycleBottomRoiLegend");if(!svg)return;const series=cycleBottomRoiSeries();svg.replaceChildren();if(!series.length){status.textContent="Historique BTC indisponible.";return}
     renderCycleBottomRoiSelector(series);
-    renderCycleBottomDurationComparison(series);
+    renderCycleBottomDuration(series);
     const visibleNames=cycleBottomRoiVisibleNames(),visibleSeries=series.filter(s=>visibleNames.includes(s.name)),referenceSeries=series.filter(s=>s.reference),stats=cycleBottomRoiStats(referenceSeries);
     const W=1200,H=520,L=70,R=28,T=24,B=55,maxD=cycleBottomRoiMaxDays,maxV=Math.max(10,...visibleSeries.flatMap(s=>s.rows.map(r=>r.value)),...stats.map(r=>r.upper)),logMax=Math.log10(maxV*1.08),x=d=>L+d/maxD*(W-L-R),y=v=>T+(logMax-Math.log10(Math.max(1e-6,v)))/logMax*(H-T-B);
     [1,2,4,6,10,20,40,60,100,200].filter(v=>v<=maxV*1.1).forEach(v=>{const yy=y(v),line=svgEl("line",{x1:L,y1:yy,x2:W-R,y2:yy,stroke:"#263b52","stroke-width":1}),tx=svgEl("text",{x:L-10,y:yy+4,"text-anchor":"end",fill:"#9bb0c5","font-size":11});tx.textContent=v+"×";svg.append(line,tx)});
@@ -4107,11 +4105,11 @@ async function refreshMvrv(){
     try{
       const liveResult=await fetchLive();
       etfRows=liveResult.rows; live=liveResult.source||true;
-      try{localStorage.setItem('btc-etf-farside-v150',JSON.stringify({savedAt:Date.now(),rows:etfRows,source:live}))}catch(e){}
+      try{localStorage.setItem('btc-etf-farside-v149',JSON.stringify({savedAt:Date.now(),rows:etfRows,source:live}))}catch(e){}
     }catch(e){
       live=false;
       try{
-        const keys=['btc-etf-farside-v150','btc-etf-farside-v148','btc-etf-farside-v145'];
+        const keys=['btc-etf-farside-v149','btc-etf-farside-v148','btc-etf-farside-v145'];
         let cached=null;
         for(const k of keys){
           const c=JSON.parse(localStorage.getItem(k)||'null');
@@ -4733,15 +4731,17 @@ async function refreshMvrv(){
       <button type="button" data-bmsb-range="all">Depuis 2012</button>
       <button type="button" data-bmsb-range="5y" class="active">5 ans</button>
       <button type="button" data-bmsb-range="2y">2 ans</button>
+      <button type="button" id="refreshBmsb">↻ Actualiser</button>
       <label style="display:flex;gap:6px;align-items:center">
         <input id="bmsbLogScale" type="checkbox" checked> Échelle log
       </label>
     </div>
     <div class="chart-wrap" style="min-height:460px">
-      <canvas id="btcBmsbChart"></canvas>
+      <svg id="btcBmsbChart" class="market-chart" viewBox="0 0 1200 600" role="img" aria-label="Prix Bitcoin et Bull Market Support Band"></svg>
+      <div class="year-tooltip" id="bmsbTooltip" role="status" aria-live="polite"></div>
     </div>
     <div class="muted" style="margin-top:8px">
-      Calcul : clôtures hebdomadaires BTC · SMA simple sur 20 semaines · EMA exponentielle sur 21 semaines.
+      Calcul : clôtures hebdomadaires BTC · SMA simple sur 20 semaines · EMA exponentielle sur 21 semaines. <span id="bmsbSourceStatus">Chargement de l’historique…</span>
     </div>
   </div>
 
@@ -4760,158 +4760,118 @@ async function refreshMvrv(){
 <script>
 
 (function(){
-  const PAGE_ID="btc-bmsb";
-  let bmsbChart=null,bmsbRange="5y",bmsbRows=[];
+  const PAGE_ID="btc-bmsb", DAY=86400000;
+  let bmsbRange="5y", bmsbRows=[], loadToken=0;
   const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const el=id=>document.getElementById(id);
+  const svgEl=(name,attrs={})=>{const n=document.createElementNS("http://www.w3.org/2000/svg",name);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));return n};
+  const money=v=>Number.isFinite(v)?"$"+new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(v):"—";
 
-  function getDailyRows(){
-    const sources=[window.bitcoinDailyHistory,window.btcDailyHistory,window.bitcoinPriceHistory,window.btcHistory];
-    for(const src of sources){
-      if(Array.isArray(src) && src.length>50){
-        const out=src.map(r=>{
-          if(Array.isArray(r)) return {date:String(r[0]).slice(0,10),price:Number(r[4] ?? r[1])};
-          return {date:String(r.date ?? r.time ?? r.timestamp ?? "").slice(0,10),price:Number(r.close ?? r.price ?? r.value)};
-        }).filter(r=>r.date && Number.isFinite(r.price) && r.price>0);
-        if(out.length>50) return out.sort((a,b)=>a.date.localeCompare(b.date));
-      }
-    }
+  function parseStoredRows(){
     try{
-      if(typeof newBitcoinRiskHistory==="function"){
-        const rows=newBitcoinRiskHistory();
-        const out=rows.map(r=>({date:String(r.date).slice(0,10),price:Number(r.price ?? r.close)}))
-          .filter(r=>r.date && Number.isFinite(r.price) && r.price>0);
-        if(out.length>50) return out.sort((a,b)=>a.date.localeCompare(b.date));
-      }
-    }catch(e){}
-    return [];
+      const raw=JSON.parse(localStorage.getItem("btc-open-risk-ma365-history")||"[]");
+      if(!Array.isArray(raw))return [];
+      return raw.map(r=>({date:String(r.date||"").slice(0,10),price:Number(r.price??r.close??r.value)}))
+        .filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&Number.isFinite(r.price)&&r.price>0)
+        .sort((a,b)=>a.date.localeCompare(b.date));
+    }catch(e){return []}
+  }
+
+  async function fetchRows(){
+    const response=await fetch("https://gianpaj.github.io/crypto-charts/data/btc-risk.json",{cache:"no-store"});
+    if(!response.ok)throw new Error("HTTP "+response.status);
+    const payload=await response.json();
+    const raw=Array.isArray(payload)?payload:(Array.isArray(payload?.data)?payload.data:[]);
+    const rows=raw.map(r=>Array.isArray(r)?{date:String(r[0]||"").slice(0,10),price:Number(r[1])}:{date:String(r.date||r.time||r.timestamp||"").slice(0,10),price:Number(r.price??r.close??r.value)})
+      .filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&Number.isFinite(r.price)&&r.price>0)
+      .sort((a,b)=>a.date.localeCompare(b.date));
+    if(rows.length<500)throw new Error("historique insuffisant");
+    return {rows,raw};
   }
 
   function weeklyCloses(rows){
     const weeks=new Map();
     rows.forEach(r=>{
-      const d=new Date(r.date+"T12:00:00");
-      const day=d.getUTCDay();
-      const monday=new Date(d);
-      const diff=(day+6)%7;
-      monday.setUTCDate(d.getUTCDate()-diff);
-      const key=monday.toISOString().slice(0,10);
-      const prev=weeks.get(key);
-      if(!prev || r.date>prev.date) weeks.set(key,r);
+      const d=new Date(r.date+"T12:00:00Z"); if(!Number.isFinite(d.getTime()))return;
+      const monday=new Date(d); monday.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));
+      const key=monday.toISOString().slice(0,10),prev=weeks.get(key);
+      if(!prev||r.date>prev.date)weeks.set(key,r);
     });
     return [...weeks.values()].sort((a,b)=>a.date.localeCompare(b.date));
   }
 
-  function sma(vals,n,i){
-    if(i<n-1)return null;
-    let s=0;for(let j=i-n+1;j<=i;j++)s+=vals[j];
-    return s/n;
-  }
-
   function build(rows){
-    const w=weeklyCloses(rows);
-    const prices=w.map(r=>r.price);
-    const alpha=2/(21+1);
-    let ema=null;
-    const out=[];
+    const w=weeklyCloses(rows),prices=w.map(r=>r.price),alpha=2/22,out=[];let ema=null;
     for(let i=0;i<w.length;i++){
-      const p=prices[i];
-      if(i===20){
-        ema=prices.slice(0,21).reduce((a,b)=>a+b,0)/21;
-      }else if(i>20){
-        ema=alpha*p+(1-alpha)*ema;
-      }
-      const s=sma(prices,20,i);
-      out.push({date:w[i].date,price:p,sma20:s,ema21:i>=20?ema:null});
+      if(i===20)ema=prices.slice(0,21).reduce((a,b)=>a+b,0)/21;
+      else if(i>20)ema=alpha*prices[i]+(1-alpha)*ema;
+      if(i<19||i<20||!Number.isFinite(ema))continue;
+      let sum=0;for(let j=i-19;j<=i;j++)sum+=prices[j];
+      out.push({date:w[i].date,ms:Date.parse(w[i].date+"T12:00:00Z"),price:prices[i],sma20:sum/20,ema21:ema});
     }
-    return out.filter(r=>r.sma20!=null && r.ema21!=null);
+    return out;
   }
 
   function filtered(){
     if(bmsbRange==="all"||!bmsbRows.length)return bmsbRows;
-    const last=new Date(bmsbRows.at(-1).date+"T00:00:00");
-    const years=bmsbRange==="5y"?5:2;
-    const cut=new Date(last);cut.setFullYear(cut.getFullYear()-years);
-    return bmsbRows.filter(r=>new Date(r.date+"T00:00:00")>=cut);
+    const years=bmsbRange==="5y"?5:2,last=bmsbRows.at(-1).ms,cut=last-years*365.25*DAY;
+    return bmsbRows.filter(r=>r.ms>=cut);
   }
 
-  function money(v){
-    if(!Number.isFinite(v))return "—";
-    return "$"+new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(v);
+  function updateKpis(){
+    const last=bmsbRows.at(-1); if(!last)return;
+    el("bmsbPriceKpi").textContent=money(last.price); el("bmsbSmaKpi").textContent=money(last.sma20); el("bmsbEmaKpi").textContent=money(last.ema21);
+    const hi=Math.max(last.sma20,last.ema21),lo=Math.min(last.sma20,last.ema21),mid=(hi+lo)/2;
+    let pos="Dans la bande",msg="Le prix évolue à l’intérieur du Bull Market Support Band.";
+    if(last.price>hi){pos="Au-dessus";msg="Le prix est au-dessus du BMSB : la bande peut agir comme support si la structure haussière tient."}
+    else if(last.price<lo){pos="Sous la bande";msg="Le prix est sous le BMSB : la bande peut agir comme résistance lors des rebonds."}
+    el("bmsbPositionKpi").textContent=pos; el("bmsbInterpretation").textContent=msg+" Écart au centre de bande : "+((last.price-mid)/mid*100).toFixed(1).replace(".",",")+" %.";
   }
 
-  function render(){
-    const last=bmsbRows.at(-1);
-    if(last){
-      document.getElementById("bmsbPriceKpi").textContent=money(last.price);
-      document.getElementById("bmsbSmaKpi").textContent=money(last.sma20);
-      document.getElementById("bmsbEmaKpi").textContent=money(last.ema21);
-      const hi=Math.max(last.sma20,last.ema21),lo=Math.min(last.sma20,last.ema21);
-      let pos="Dans la bande",msg="Le prix évolue à l’intérieur du Bull Market Support Band.";
-      if(last.price>hi){pos="Au-dessus";msg="Le prix est au-dessus du BMSB : la bande peut agir comme support si la structure haussière tient."}
-      else if(last.price<lo){pos="Sous la bande";msg="Le prix est sous le BMSB : dans ce contexte, la bande peut agir comme résistance lors des rebonds."}
-      document.getElementById("bmsbPositionKpi").textContent=pos;
-      document.getElementById("bmsbInterpretation").textContent=msg+" Écart au centre de bande : "+(((last.price-((hi+lo)/2))/((hi+lo)/2))*100).toFixed(1)+" %.";
-    }
-
-    const rows=filtered(),canvas=document.getElementById("btcBmsbChart");
-    if(!canvas||!window.Chart)return;
-    if(bmsbChart){try{bmsbChart.destroy()}catch(e){}}
-    const log=document.getElementById("bmsbLogScale")?.checked!==false;
-    bmsbChart=new Chart(canvas.getContext("2d"),{
-      type:"line",
-      data:{labels:rows.map(r=>r.date),datasets:[
-        {label:"Prix BTC",data:rows.map(r=>r.price),pointRadius:0,borderWidth:1.4,tension:.08},
-        {label:"20W SMA",data:rows.map(r=>r.sma20),pointRadius:0,borderWidth:2,tension:.12},
-        {label:"21W EMA",data:rows.map(r=>r.ema21),pointRadius:0,borderWidth:2,tension:.12}
-      ]},
-      options:{
-        responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
-        plugins:{legend:{display:true},tooltip:{enabled:true,callbacks:{
-          title(items){const s=items?.[0]?.label;if(!s)return "";const d=new Date(String(s).slice(0,10)+"T12:00:00");return Number.isNaN(d.getTime())?s:d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});},
-          label(ctx){return ctx.dataset.label+" : "+money(ctx.parsed.y);}
-        }}},
-        scales:{
-          x:{ticks:{maxTicksLimit:10},grid:{display:false}},
-          y:{type:log?"logarithmic":"linear",title:{display:true,text:"Prix ($)"},ticks:{callback:v=>new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:0}).format(v)}}
-        }
-      }
-    });
+  function draw(){
+    updateKpis(); const rows=filtered(),svg=el("btcBmsbChart"),tip=el("bmsbTooltip"); if(!svg)return;
+    svg.replaceChildren(); if(tip)tip.classList.remove("show");
+    if(rows.length<2){const t=svgEl("text",{x:600,y:300,"text-anchor":"middle",fill:"#91a4b8","font-size":18});t.textContent="Historique BMSB indisponible";svg.append(t);return}
+    const W=1200,H=600,L=82,R=34,T=30,B=62,pw=W-L-R,ph=H-T-B,minMs=rows[0].ms,maxMs=rows.at(-1).ms,log=el("bmsbLogScale")?.checked!==false;
+    const vals=rows.flatMap(r=>[r.price,r.sma20,r.ema21]).filter(v=>Number.isFinite(v)&&v>0),vmin=Math.min(...vals)*.88,vmax=Math.max(...vals)*1.12;
+    const ymin=log?Math.log(vmin):vmin,ymax=log?Math.log(vmax):vmax,x=r=>L+(r.ms-minMs)/Math.max(1,maxMs-minMs)*pw,y=v=>T+(ymax-(log?Math.log(v):v))/(ymax-ymin)*ph;
+    const gridColor="#203247",axisColor="#91a4b8";
+    const yTicks=[]; if(log){for(let p=Math.floor(Math.log10(vmin));p<=Math.ceil(Math.log10(vmax));p++){for(const m of [1,2,5]){const v=m*10**p;if(v>=vmin&&v<=vmax)yTicks.push(v)}}}else{for(let i=0;i<=5;i++)yTicks.push(vmin+(vmax-vmin)*i/5)}
+    yTicks.forEach(v=>{const py=y(v);svg.append(svgEl("line",{x1:L,y1:py,x2:W-R,y2:py,stroke:gridColor,"stroke-width":1,opacity:.65}));const t=svgEl("text",{x:L-10,y:py+4,"text-anchor":"end",fill:axisColor,"font-size":12});t.textContent=money(v).replace("$","");svg.append(t)});
+    const firstYear=new Date(minMs).getUTCFullYear(),lastYear=new Date(maxMs).getUTCFullYear(),step=Math.max(1,Math.ceil((lastYear-firstYear)/8));
+    for(let yr=firstYear;yr<=lastYear;yr+=step){const ms=Date.UTC(yr,0,1,12);if(ms<minMs||ms>maxMs)continue;const px=L+(ms-minMs)/(maxMs-minMs)*pw;const t=svgEl("text",{x:px,y:H-24,"text-anchor":"middle",fill:axisColor,"font-size":12});t.textContent=yr;svg.append(t)}
+    const path=key=>rows.map((r,i)=>(i?"L":"M")+x(r).toFixed(1)+","+y(r[key]).toFixed(1)).join(" ");
+    const top=rows.map(r=>({ms:r.ms,value:Math.max(r.sma20,r.ema21)})),bottom=rows.map(r=>({ms:r.ms,value:Math.min(r.sma20,r.ema21)}));
+    const area=top.map((r,i)=>(i?"L":"M")+(L+(r.ms-minMs)/(maxMs-minMs)*pw).toFixed(1)+","+y(r.value).toFixed(1)).join(" ")+" "+bottom.slice().reverse().map(r=>"L"+(L+(r.ms-minMs)/(maxMs-minMs)*pw).toFixed(1)+","+y(r.value).toFixed(1)).join(" ")+" Z";
+    svg.append(svgEl("path",{d:area,fill:"#3de0a1",opacity:.10,stroke:"none"}));
+    [["price","#f7931a",2.2],["sma20","#ff5263",2.5],["ema21","#3de0a1",2.5]].forEach(([k,c,w])=>svg.append(svgEl("path",{d:path(k),fill:"none",stroke:c,"stroke-width":w,"stroke-linejoin":"round","stroke-linecap":"round"})));
+    const legend=[['Prix BTC','#f7931a'],['SMA 20W','#ff5263'],['EMA 21W','#3de0a1']];legend.forEach((it,i)=>{svg.append(svgEl("line",{x1:L+i*150,y1:14,x2:L+25+i*150,y2:14,stroke:it[1],"stroke-width":3}));const t=svgEl("text",{x:L+31+i*150,y:18,fill:"#dce8f5","font-size":12});t.textContent=it[0];svg.append(t)});
+    const hover=svgEl("line",{y1:T,y2:H-B,stroke:"#dce8f5","stroke-width":1,opacity:.55,hidden:""});svg.append(hover);
+    svg.onpointermove=e=>{const rect=svg.getBoundingClientRect(),vx=(e.clientX-rect.left)/Math.max(1,rect.width)*W,target=minMs+Math.max(0,Math.min(1,(vx-L)/pw))*(maxMs-minMs),r=rows.reduce((a,b)=>Math.abs(b.ms-target)<Math.abs(a.ms-target)?b:a,rows[0]);hover.hidden=false;hover.setAttribute("x1",x(r));hover.setAttribute("x2",x(r));if(tip){const hi=Math.max(r.sma20,r.ema21),lo=Math.min(r.sma20,r.ema21);tip.innerHTML=`<b>${new Date(r.ms).toLocaleDateString("fr-FR")}</b><div>Prix BTC : <strong>${money(r.price)}</strong></div><div>SMA 20W : <strong>${money(r.sma20)}</strong></div><div>EMA 21W : <strong>${money(r.ema21)}</strong></div><div>Position : <strong>${r.price>hi?"au-dessus":r.price<lo?"sous la bande":"dans la bande"}</strong></div>`;tip.classList.add("show");const host=svg.parentElement?.getBoundingClientRect();if(host){tip.style.left=Math.max(8,Math.min(host.width-230,e.clientX-host.left+12))+"px";tip.style.top=Math.max(8,e.clientY-host.top-90)+"px"}}};
+    svg.onpointerleave=()=>{hover.hidden=true;if(tip)tip.classList.remove("show")};
   }
 
-  function init(){
-    const rows=getDailyRows();
-    if(!rows.length){document.getElementById("bmsbInterpretation").textContent="Historique BTC quotidien indisponible.";return;}
-    bmsbRows=build(rows.filter(r=>r.date>="2011-01-01"));render();
+  async function init(force=false){
+    const token=++loadToken,status=el("bmsbSourceStatus"),btn=el("refreshBmsb"); if(btn)btn.disabled=true;if(status)status.textContent="Chargement de l’historique…";
+    let rows=force?[]:parseStoredRows(),source=rows.length>=500?"cache historique MA365":"";
+    if(rows.length<500){try{const fetched=await fetchRows();if(token!==loadToken)return;rows=fetched.rows;source="crypto-charts · Bitstamp · direct";try{localStorage.setItem("btc-open-risk-ma365-history",JSON.stringify(fetched.raw))}catch(e){}}catch(e){rows=parseStoredRows();source=rows.length?"cache historique MA365":"indisponible"}}
+    if(token!==loadToken)return;
+    if(rows.length<50){bmsbRows=[];el("bmsbInterpretation").textContent="Historique BTC indisponible. Ouvrez la page Bitcoin Risk puis cliquez sur Actualiser, ou réessayez ici.";if(status)status.textContent="Source indisponible";draw();if(btn)btn.disabled=false;return}
+    bmsbRows=build(rows.filter(r=>r.date>="2011-01-01"));draw();
+    if(status){const first=bmsbRows[0],last=bmsbRows.at(-1);status.textContent=`Source : ${source} · ${first?new Date(first.ms).toLocaleDateString("fr-FR"):"—"} → ${last?new Date(last.ms).toLocaleDateString("fr-FR"):"—"} · ${bmsbRows.length.toLocaleString("fr-FR")} semaines`}
+    if(btn)btn.disabled=false;
   }
 
   function addNav(){
-    if([...document.querySelectorAll("button,a")].some(el=>norm(el.textContent)==="btc bmsb"||norm(el.textContent).includes("bull market support")))return;
-    const refs=[...document.querySelectorAll("button,a")];
-    const ref=refs.find(el=>norm(el.textContent).includes("btc volatility"))
-      || refs.find(el=>norm(el.textContent).includes("btc dominance"))
-      || refs.find(el=>norm(el.textContent).includes("mvrv"));
-    if(!ref||!ref.parentNode)return;
-    const btn=ref.cloneNode(true);btn.removeAttribute("id");btn.textContent="BTC BMSB";
-    if("page" in btn.dataset)btn.dataset.page=PAGE_ID;
-    if("pageTarget" in btn.dataset)btn.dataset.pageTarget=PAGE_ID;
-    if("target" in btn.dataset)btn.dataset.target=PAGE_ID;
-    btn.addEventListener("click",ev=>{
-      ev.preventDefault();
-      document.querySelectorAll(".page").forEach(p=>{p.classList.add("hidden");p.style.display="none";});
-      const p=document.getElementById("page-btc-bmsb");if(p){p.classList.remove("hidden");p.style.display="";}
-      init();
-    });
-    ref.insertAdjacentElement("afterend",btn);
+    if([...document.querySelectorAll("button,a")].some(n=>norm(n.textContent)==="btc bmsb"))return;
+    const refs=[...document.querySelectorAll("button,a")],ref=refs.find(n=>norm(n.textContent).includes("btc volatility"))||refs.find(n=>norm(n.textContent).includes("btc dominance"))||refs.find(n=>norm(n.textContent).includes("mvrv"));
+    if(!ref||!ref.parentNode)return;const btn=ref.cloneNode(true);btn.removeAttribute("id");btn.textContent="BTC BMSB";
+    if("page" in btn.dataset)btn.dataset.page=PAGE_ID;if("pageTarget" in btn.dataset)btn.dataset.pageTarget=PAGE_ID;if("target" in btn.dataset)btn.dataset.target=PAGE_ID;
+    btn.addEventListener("click",ev=>{ev.preventDefault();document.querySelectorAll(".page").forEach(p=>{p.classList.add("hidden");p.style.display="none"});const p=el("page-btc-bmsb");if(p){p.classList.remove("hidden");p.style.display=""}init(false)});ref.insertAdjacentElement("afterend",btn);
   }
-
   function boot(){
-    addNav();
-    document.querySelectorAll("[data-bmsb-range]").forEach(b=>b.addEventListener("click",()=>{
-      document.querySelectorAll("[data-bmsb-range]").forEach(x=>x.classList.remove("active"));
-      b.classList.add("active");bmsbRange=b.dataset.bmsbRange;render();
-    }));
-    document.getElementById("bmsbLogScale")?.addEventListener("change",render);
-    setTimeout(init,500);
+    addNav();document.querySelectorAll("[data-bmsb-range]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-bmsb-range]").forEach(x=>x.classList.remove("active"));b.classList.add("active");bmsbRange=b.dataset.bmsbRange;draw()}));
+    el("bmsbLogScale")?.addEventListener("change",draw);el("refreshBmsb")?.addEventListener("click",()=>init(true));setTimeout(()=>init(false),900);setTimeout(()=>{if(!bmsbRows.length)init(false)},4000);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
@@ -5177,10 +5137,10 @@ async function refreshMvrv(){
 </script>
 
 
-<script id="v150-options-volatility-js">
+<script id="v149-options-volatility-js">
 (function(){
   const API="https://rest-v1.volmex.finance/v2/history";
-  const CACHE_KEY="btc-bviv-history-v150";
+  const CACHE_KEY="btc-bviv-history-v149";
   const DAY=86400000;
   let rows=[],range="3y",hoverRows=[],hoverX=null,refreshTimer=null;
   const $=id=>document.getElementById(id);
