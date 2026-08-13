@@ -309,8 +309,8 @@
 </style>
 
 
-<style id="v149-options-volatility-style">
-/* v149 · BVIV / options volatility */
+<style id="v150-options-volatility-style">
+/* v150 · BVIV / options volatility */
 #optionsVolatilityPage .ov-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
 #optionsVolatilityPage .ov-kpi{padding:14px;border:1px solid #29405a;border-radius:13px;background:#081523}
 #optionsVolatilityPage .ov-kpi .value{font-size:25px}
@@ -335,7 +335,7 @@
 <body>
 <main class="app">
   <header class="top">
-    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v149</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
+    <div class="brand"><div class="btc">₿</div><div><h1>Bitcoin · Blocs & cycles <span class="version-badge" aria-label="Version 146">v150</span></h1><p>Repères circulaires inspirés de l’analyse temporelle par blocs</p></div></div>
     <div class="actions"><div class="view-mode-tools" aria-label="Mode d’affichage"><button id="standardModeBtn" type="button">Standard</button><button id="expertModeBtn" type="button">Expert</button><button class="pages-button" id="openPageSelector" type="button">☰ Pages</button></div><button class="btn" id="exportBtn">Exporter les données</button><button class="btn" id="manualBtn">Saisie manuelle</button><button class="btn primary" id="refreshBtn">↻ Actualiser</button></div>
   </header>
 
@@ -1413,6 +1413,9 @@
       <div class="year-legend" id="cycleBottomRoiLegend"></div>
       <div class="chart-wrap"><svg id="cycleBottomRoiChart" viewBox="0 0 1200 520" preserveAspectRatio="none"></svg><div class="chart-tooltip" id="cycleBottomRoiTooltip" hidden></div></div>
       <div class="year-summary" id="cycleBottomRoiDeviationSummary" style="margin-top:12px"></div>
+      <div class="reading" style="margin-top:14px"><h3>Comparatif de durée des cycles</h3><p class="sub">Nombre total de jours entre deux points bas successifs. Pour 2022 → 2026, le calcul utilise le bottom 2026 provisoire et se recale automatiquement si un nouveau plus bas apparaît.</p></div>
+      <div class="year-summary" id="cycleBottomDurationSummary" style="margin-top:10px"></div>
+      <div class="return-table-wrap" style="margin-top:10px"><table class="return-table"><thead><tr><th>Cycle</th><th>Du point bas</th><th>Au point bas suivant</th><th>Jours totaux</th><th>Écart vs précédent</th><th>Écart vs moyenne historique</th></tr></thead><tbody id="cycleBottomDurationBody"><tr><td colspan="6">Calcul…</td></tr></tbody></table></div>
       <div id="cycleBottomRoiStatus" class="sub" style="margin-top:10px">Le graphique utilise le même historique BTC que la page BTC.</div>
     </section>
     <section class="panel"><h2>Comment lire ce graphique ?</h2><div class="reading"><p><b>1 = prix du point bas.</b> Une valeur de 10 signifie que Bitcoin vaut 10× le prix du creux du cycle. L’alignement par nombre de jours permet de comparer la vitesse de reprise des différents cycles sans être trompé par leurs dates calendaires.</p><p>Le graphique sert surtout à visualiser les <b>diminishing returns</b> : à durée comparable, les multiples atteints par les cycles récents ont historiquement tendance à être plus faibles. Ce n’est pas un outil de prédiction du prochain prix à lui seul.</p><p><b>Creux de référence :</b> 14/01/2015, 15/12/2018 et 21/11/2022. Le <b>cycle 2026</b> est également affiché avec un <b>bottom provisoire</b>, défini automatiquement comme la plus basse clôture BTC depuis le 1er janvier 2026. Si un nouveau plus bas apparaît, le point de départ et toute la courbe 2026 sont recalculés automatiquement. Les prix sont extraits du même historique BTC que la page BTC.</p></div></section>
@@ -3533,9 +3536,23 @@ async function refreshMvrv(){
     }
     return byDay;
   }
+  function renderCycleBottomDurationComparison(series){
+    const body=$("cycleBottomDurationBody"),summary=$("cycleBottomDurationSummary");if(!body||!summary||series.length<2)return;
+    const ordered=[...series].sort((a,b)=>a.base.ms-b.base.ms),rows=[];
+    for(let i=0;i<ordered.length-1;i++){
+      const a=ordered[i],b=ordered[i+1],days=Math.round((b.base.ms-a.base.ms)/86400000);
+      rows.push({name:a.name.replace(/ ·.*$/,""),from:a.base.ms,to:b.base.ms,days,provisional:!!b.provisional});
+    }
+    const completed=rows.filter(r=>!r.provisional),histAvg=completed.length?completed.reduce((sum,r)=>sum+r.days,0)/completed.length:NaN;
+    body.innerHTML=rows.map((r,i)=>{const prev=i?rows[i-1]:null,dPrev=prev?r.days-prev.days:NaN,dAvg=Number.isFinite(histAvg)?r.days-histAvg:NaN;return `<tr${r.provisional?' class="projected"':''}><td><b>${r.name}</b>${r.provisional?' <small>→ bottom 2026 provisoire</small>':''}</td><td>${new Date(r.from).toLocaleDateString("fr-FR")}</td><td>${new Date(r.to).toLocaleDateString("fr-FR")}</td><td><b>${r.days.toLocaleString("fr-FR")} j</b></td><td>${Number.isFinite(dPrev)?`${dPrev>=0?'+':''}${dPrev.toLocaleString("fr-FR")} j`:'—'}</td><td>${Number.isFinite(dAvg)?`${dAvg>=0?'+':''}${Math.round(dAvg).toLocaleString("fr-FR")} j`:'—'}</td></tr>`}).join("");
+    const latest=rows.at(-1),previous=rows.length>1?rows.at(-2):null,deltaPrev=latest&&previous?latest.days-previous.days:NaN,deltaAvg=latest&&Number.isFinite(histAvg)?latest.days-histAvg:NaN;
+    summary.innerHTML=`<div class="year-stat"><span class="label">Durée moyenne historique</span><b>${Number.isFinite(histAvg)?Math.round(histAvg).toLocaleString("fr-FR")+" j":"—"}</b><span class="sub">Moyenne des cycles complets 2015→2018 et 2018→2022</span></div><div class="year-stat"><span class="label">Cycle 2022 → 2026 provisoire</span><b style="color:#21c7d9">${latest?latest.days.toLocaleString("fr-FR")+" j":"—"}</b><span class="sub">Du bottom 2022 au bottom provisoire 2026</span></div><div class="year-stat"><span class="label">Différence vs cycle précédent</span><b>${Number.isFinite(deltaPrev)?`${deltaPrev>=0?'+':''}${deltaPrev.toLocaleString("fr-FR")} j`:'—'}</b><span class="sub">Positif = cycle plus long · négatif = plus court</span></div><div class="year-stat"><span class="label">Différence vs moyenne</span><b>${Number.isFinite(deltaAvg)?`${deltaAvg>=0?'+':''}${Math.round(deltaAvg).toLocaleString("fr-FR")} j`:'—'}</b><span class="sub">Écart au nombre moyen de jours des cycles complets</span></div>`;
+  }
+
   function drawCycleBottomRoi(){
     const svg=$("cycleBottomRoiChart"),status=$("cycleBottomRoiStatus"),summary=$("cycleBottomRoiDeviationSummary"),legend=$("cycleBottomRoiLegend");if(!svg)return;const series=cycleBottomRoiSeries();svg.replaceChildren();if(!series.length){status.textContent="Historique BTC indisponible.";return}
     renderCycleBottomRoiSelector(series);
+    renderCycleBottomDurationComparison(series);
     const visibleNames=cycleBottomRoiVisibleNames(),visibleSeries=series.filter(s=>visibleNames.includes(s.name)),referenceSeries=series.filter(s=>s.reference),stats=cycleBottomRoiStats(referenceSeries);
     const W=1200,H=520,L=70,R=28,T=24,B=55,maxD=cycleBottomRoiMaxDays,maxV=Math.max(10,...visibleSeries.flatMap(s=>s.rows.map(r=>r.value)),...stats.map(r=>r.upper)),logMax=Math.log10(maxV*1.08),x=d=>L+d/maxD*(W-L-R),y=v=>T+(logMax-Math.log10(Math.max(1e-6,v)))/logMax*(H-T-B);
     [1,2,4,6,10,20,40,60,100,200].filter(v=>v<=maxV*1.1).forEach(v=>{const yy=y(v),line=svgEl("line",{x1:L,y1:yy,x2:W-R,y2:yy,stroke:"#263b52","stroke-width":1}),tx=svgEl("text",{x:L-10,y:yy+4,"text-anchor":"end",fill:"#9bb0c5","font-size":11});tx.textContent=v+"×";svg.append(line,tx)});
@@ -4090,11 +4107,11 @@ async function refreshMvrv(){
     try{
       const liveResult=await fetchLive();
       etfRows=liveResult.rows; live=liveResult.source||true;
-      try{localStorage.setItem('btc-etf-farside-v149',JSON.stringify({savedAt:Date.now(),rows:etfRows,source:live}))}catch(e){}
+      try{localStorage.setItem('btc-etf-farside-v150',JSON.stringify({savedAt:Date.now(),rows:etfRows,source:live}))}catch(e){}
     }catch(e){
       live=false;
       try{
-        const keys=['btc-etf-farside-v149','btc-etf-farside-v148','btc-etf-farside-v145'];
+        const keys=['btc-etf-farside-v150','btc-etf-farside-v148','btc-etf-farside-v145'];
         let cached=null;
         for(const k of keys){
           const c=JSON.parse(localStorage.getItem(k)||'null');
@@ -5160,10 +5177,10 @@ async function refreshMvrv(){
 </script>
 
 
-<script id="v149-options-volatility-js">
+<script id="v150-options-volatility-js">
 (function(){
   const API="https://rest-v1.volmex.finance/v2/history";
-  const CACHE_KEY="btc-bviv-history-v149";
+  const CACHE_KEY="btc-bviv-history-v150";
   const DAY=86400000;
   let rows=[],range="3y",hoverRows=[],hoverX=null,refreshTimer=null;
   const $=id=>document.getElementById(id);
